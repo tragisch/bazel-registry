@@ -1,0 +1,7 @@
+"""
+argon2 module
+"""
+module(
+    name = "argon2",
+    version = "20190702",
+)

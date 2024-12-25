@@ -1,7 +1,0 @@
-"""
-zlib module
-"""
-module(
-    name = "zlib",
-    version = "1.3",
-)
