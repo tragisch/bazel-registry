@@ -1,5 +1,5 @@
---- /dev/null	2024-12-25 19:29:54
-+++ modules/argon2/argon2.BUILD	2024-12-25 19:29:09
+--- /dev/null
++++ BUILD.bazel
 @@ -0,0 +1,23 @@
 +licenses(["notice"])  # APACHE-2.0
 +
