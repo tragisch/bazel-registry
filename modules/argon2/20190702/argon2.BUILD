@@ -1,4 +1,4 @@
-licenses(["notice"])  # MIT
+licenses(["notice"])  # APACHE-2.0
 
 cc_library(
     name = "argon2",

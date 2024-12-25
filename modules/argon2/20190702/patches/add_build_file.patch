@@ -1,7 +1,7 @@
 --- /dev/null	2024-12-25 19:29:54
 +++ modules/argon2/argon2.BUILD	2024-12-25 19:29:09
 @@ -0,0 +1,23 @@
-+licenses(["notice"])  # MIT
++licenses(["notice"])  # APACHE-2.0
 +
 +cc_library(
 +    name = "argon2",
