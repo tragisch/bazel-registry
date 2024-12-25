@@ -1,10 +1,11 @@
 {
     "name": "argon2",
     "url": "https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/20190702.tar.gz",
-    "integrity": "daf972a89577f8772602bf2eb38b6a3dd3d922bf5724d45e7f9589b5e830442c",
+    "integrity": "sha256-daf972a89577f8772602bf2eb38b6a3dd3d922bf5724d45e7f9589b5e830442c",
     "strip_prefix": "phc-winner-argon2-20190702",
     "patch_strip": 0,
+    "license": "Apache-2.0",
     "patches": {
-        "add_build_file.patch": "5f760f2d7509cac7b2249beecad9c764c535bf5b619cd6b3126689522a81731c"
+        "add_build_file.patch": "sha256-5f760f2d7509cac7b2249beecad9c764c535bf5b619cd6b3126689522a81731c"
     }
 }
