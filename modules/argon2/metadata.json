@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/tragisch/bazel-registry/argon2",
+    "maintainers": [
+        {
+            "github": "tragisch"
+        }
+    ],
+    "versions": [
+        "0.0.1"
+    ]
+}
