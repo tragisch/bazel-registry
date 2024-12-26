@@ -1,3 +1,7 @@
+## About
+Bazel-registry for common non-Bazel libraries. 
+Build patches for MacOS.
+
 ## How to use
 
 ```
