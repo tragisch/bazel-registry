@@ -1,11 +1,7 @@
 {
-    "homepage": "https://github.com/tragisch/bazel-registry/argon2",
-    "maintainers": [
-        {
-            "github": "tragisch"
-        }
-    ],
+    "homepage": "https://github.com/P-H-C/phc-winner-argon2/",
+    "description": "Argon2 password hashing",
     "versions": [
-        "0.0.1"
+        "20190702"
     ]
 }
