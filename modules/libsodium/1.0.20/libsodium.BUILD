@@ -91,9 +91,6 @@ cc_library(
         "//conditions:default": [
             "-lpthread",
             "-Wl",
-            "--dynamicbase",
-            "--high-entropy-va",
-            "--nxcompat",
         ],
     }),
     visibility = ["//visibility:public"],

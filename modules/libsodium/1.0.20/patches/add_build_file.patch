@@ -1,6 +1,6 @@
 --- /dev/null
 +++ BUILD.bazel
-@@ -0,0 +1,101 @@
+@@ -0,0 +1,98 @@
 +licenses(["notice"])  # ISC License
 +
 +genrule(
@@ -94,9 +94,6 @@
 +        "//conditions:default": [
 +            "-lpthread",
 +            "-Wl",
-+            "--dynamicbase",
-+            "--high-entropy-va",
-+            "--nxcompat",
 +        ],
 +    }),
 +    visibility = ["//visibility:public"],
