@@ -1,0 +1,11 @@
+{
+    "name": "box2d",
+    "url": "https://github.com/erincatto/box2d/archive/refs/tags/v3.0.0.tar.gz",
+    "integrity": "sha256-ZK11kAbNI3fJk2f1H7NpQrV/DprWkO1BVI3WIOb2yLE=",
+    "strip_prefix": "box2d-3.0.0",
+    "path-strip": 1,
+    "license": "MIT License",
+    "patches": {
+        "add_build_file.patch": "sha256-zqFv0geAFc1ezG0UsQQsaDCk2KhCfINAr4+Q/HQ7d8c="
+    }
+}

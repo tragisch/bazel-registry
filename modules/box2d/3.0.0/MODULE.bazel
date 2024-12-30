@@ -1,0 +1,7 @@
+"""
+box2d module
+"""
+module(
+    name = "box2d",
+    version = "3.0.0",
+)

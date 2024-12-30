@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/erincatto/box2d",
+    "description": "box2d is a 2D physics engine for games.",
+    "versions": [
+        "3.0.0"
+    ]
+}
