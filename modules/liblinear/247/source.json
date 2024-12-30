@@ -1,0 +1,14 @@
+{
+    "name": "liblinear",
+    "url": "https://github.com/cjlin1/liblinear/archive/refs/tags/v247.tar.gz",
+    "integrity": "sha256-pixG8goBpGJiYEYskFch9UcdpFUNOMO2j/rPCqZAZ7Q=",
+    "strip_prefix": "liblinear-247",
+    "path-strip": 1,
+    "license": "BSD Clause 3",
+    "system": [
+        "macos"
+    ],
+    "patches": {
+        "add_build_file.patch": "sha256-09pPRZTjP2f95e0T292PD4kBHb1lYyzkAlJS6ZGikUs="
+    }
+}
