@@ -1,0 +1,7 @@
+"""
+argtable3 module
+"""
+module(
+    name = "argtable3",
+    version = "3.2.2",
+)

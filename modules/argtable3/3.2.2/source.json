@@ -1,0 +1,11 @@
+{
+    "name": "argtable3",
+    "url": "https://github.com/argtable/argtable3/releases/download/v3.2.2.f25c624/argtable-v3.2.2.f25c624-amalgamation.tar.gz",
+    "integrity": "sha256-AGbSbkwJ4+Z8iXSJmWkH3TKXzQxnjXPqWsGJIljMC5g=",
+    "strip_prefix": "dist",
+    "path-strip": 1,
+    "license": "BSD-3-Clause",
+    "patches": {
+        "add_build_file.patch": "sha256-QhZNP/jbYV/HBy1UH0q+CVmiiX/Z/PGk/+/9//jUniA="
+    }
+}

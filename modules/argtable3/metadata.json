@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/argtable/argtable3?tab=readme-ov-file",
+    "description": "Argtable3 is an ANSI C library for parsing GNU style command line options with a minimum of fuss.",
+    "versions": [
+        "3.2.2"
+    ]
+}
