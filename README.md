@@ -1,6 +1,6 @@
 ## About
 Bazel-registry for common non-Bazel libraries. 
-Build patches for MacOS.
+Build patches currently for MacOS. Welcome to adapt to support Win + Linux, too.
 
 ## How to use
 
