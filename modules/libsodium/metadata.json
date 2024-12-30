@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/jedisct1/libsodium",
+    "description": "libsodium is a portable, cross-compilable, installable, packageable, API compatible version of NaCl, with a compatible API.",
+    "versions": [
+        "1.0.20"
+    ]
+}

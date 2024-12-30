@@ -1,0 +1,9 @@
+"""
+libsodium module
+"""
+module(
+    name = "libsodium",
+    version = "1.0.20",
+)
+
+bazel_dep(name = "argon2", version = "20190702")

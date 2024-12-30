@@ -1,0 +1,14 @@
+{
+    "name": "libsodium",
+    "url": "https://github.com/jedisct1/libsodium/releases/download/1.0.20-RELEASE/libsodium-1.0.20.tar.gz",
+    "integrity": "sha256-67Ze9spDkzPCu0GgwZkFhyiNoH9sf9B8s6GMwY0wzhk=",
+    "strip_prefix": "libsodium-1.0.20",
+    "path-strip": 1,
+    "license": "ISC License",
+    "system": [
+        "macos"
+    ],
+    "patches": {
+        "add_build_file.patch": "sha256-WU/OVzSq8JfgelmFNPr8hhMAqVii+GK7GwWdne7B7hQ="
+    }
+}
