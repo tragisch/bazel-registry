@@ -6,6 +6,6 @@
     "path-strip": 1,
     "license": "None",
     "patches": {
-        "add_build_file.patch": "sha256-i4+HllDAoZeFlAkyxrMNWm8FNi1YSiJR8d7IOu/mnvA="
+        "add_build_file.patch": "sha256-TMG5+LkEQEYjCEkVS8cCv27SYfgCes4IedFIW1xtmcI="
     }
 }

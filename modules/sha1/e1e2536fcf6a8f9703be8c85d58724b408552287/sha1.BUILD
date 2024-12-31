@@ -19,5 +19,6 @@ cc_library(
         "sha1.h",
         ":sha1_h",
     ],
+    includes = ["include"],
     visibility = ["//visibility:public"],
 )
