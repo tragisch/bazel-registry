@@ -1,0 +1,9 @@
+"""
+    This is a module for sha1
+    Not secure, see: https://en.wikipedia.org/wiki/Secure_Hash_Algorithms
+"""
+module(
+    name = "sha1",
+    version = "e1e2536fcf6a8f9703be8c85d58724b408552287",
+)
+bazel_dep(name = "aspect_bazel_lib", version = "2.10.0")
