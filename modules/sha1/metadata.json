@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/clibs/sha1",
+    "description": "The SHA1 functions implement the NIST Secure Hash Algorithm (SHA-1), FIPS PUB 180-1",
+    "versions": [
+        "e1e2536fcf6a8f9703be8c85d58724b408552287"
+    ]
+}
