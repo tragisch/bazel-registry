@@ -1,0 +1,9 @@
+"""
+libzmq module
+"""
+module(
+    name = "libzmq",
+    version = "4.3.5",
+)
+
+bazel_dep(name = "libsodium", version = "1.0.20")

@@ -1,0 +1,13 @@
+{
+    "name": "libzmq",
+    "url": "https://github.com/zeromq/libzmq/releases/download/v4.3.5/zeromq-4.3.5.tar.gz",
+    "integrity": "sha256-ZlPvWRDxeVSGH+cjMuaLA8puTZxxYOs6jeWlqRO/q0M=",
+    "strip_prefix": "zeromq-4.3.5",
+    "path-strip": 1,
+    "license": "Mozilla Public License 2.0",
+    "patches": {
+        "add_build_file.patch": "sha256-iDUu7ME5eQMub+BL0iEbNkeC+0jNxAG6eVjjHfnyQro=",
+        "add_sha1_c_file.patch": "sha256-M5tEkRrxuvi8xXXLd9A4X5vqDdZ1K5fxxd6SLGq+ri0=",
+        "add_sha1_h_file.patch": "sha256-RrTK99ol7VbE7mXiWS8odX0/fxztsZ+Kag45kXjQOOc="
+    }
+}

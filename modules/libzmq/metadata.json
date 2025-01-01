@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/zeromq/libzmq/",
+    "description": "ZeroMQ is a high-performance asynchronous messaging library",
+    "versions": [
+        "4.3.5"
+    ]
+}
