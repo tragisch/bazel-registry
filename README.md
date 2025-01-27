@@ -1,6 +1,8 @@
 ## About
+Tryout to understand how a bazel registry works.
+
 Bazel-registry for common non-Bazel libraries. 
-Build patches currently for MacOS. Welcome to adapt to support Win + Linux, too.
+Build patches currently for MacOS. 
 
 ## How to use
 
