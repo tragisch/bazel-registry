@@ -5,7 +5,7 @@
     "strip_prefix": "phc-winner-argon2-20190702",
     "path-strip": 1,
     "license": "Apache-2.0",
-    "patches": {
-        "add_build_file.patch": "sha256-iaKCczgcajR/tAPlePwJK8jHOx4e4IdcXwQFU08coFU="
+    "overlay": {
+        "BUILD.bazel": "sha256-ofitxMuEFHq5fTuX4Ssu/MDiPUSaPFDjfC+otRGKQqI="
     }
 }

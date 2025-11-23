@@ -1,0 +1,17 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+licenses(["notice"])  # BSD-revised
+
+cc_library(
+    name = "uthash",
+    hdrs = [
+        "src/utarray.h",
+        "src/uthash.h",
+        "src/utlist.h",
+        "src/utstack.h",
+        "src/utstring.h",
+    ],
+    include_prefix = "",
+    strip_include_prefix = "src",
+    visibility = ["//visibility:public"],
+)

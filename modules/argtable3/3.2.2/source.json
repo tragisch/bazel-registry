@@ -5,7 +5,7 @@
     "strip_prefix": "dist",
     "path-strip": 1,
     "license": "BSD-3-Clause",
-    "patches": {
-        "add_build_file.patch": "sha256-QhZNP/jbYV/HBy1UH0q+CVmiiX/Z/PGk/+/9//jUniA="
+    "overlay": {
+        "BUILD.bazel": "sha256-WHUn3b/MrnsljOLzOLNWWQsCFe+3YKq7c7b+43/t84g="
     }
 }

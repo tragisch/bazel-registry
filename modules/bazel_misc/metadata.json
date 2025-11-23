@@ -1,0 +1,17 @@
+{
+    "homepage": "https://github.com/tragisch/bazel-misc",
+    "maintainers": [
+        {
+            "email": "",
+            "github": "tragisch",
+            "name": "Uwe"
+        }
+    ],
+    "repository": [
+        "github:tragisch/bazel-misc"
+    ],
+    "versions": [
+        "v0.0.1"
+    ],
+    "yanked_versions": {}
+}

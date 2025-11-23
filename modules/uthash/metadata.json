@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/troydhanson/uthash",
+    "description": "C macros for hash tables and more",
+    "versions": [
+        "2.3.0"
+    ]
+}

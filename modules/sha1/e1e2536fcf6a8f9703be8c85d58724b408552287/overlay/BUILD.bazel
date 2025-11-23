@@ -1,0 +1,10 @@
+cc_library(
+    name = "sha1",
+    srcs = [
+        "sha1.c",
+    ],
+    hdrs = [
+        "sha1.h",
+    ],
+    visibility = ["//visibility:public"],
+)

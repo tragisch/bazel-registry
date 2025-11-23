@@ -1,9 +1,9 @@
 """
-argon2 module
+uthash module
 """
 module(
-    name = "argon2",
-    version = "20190702",
+    name = "uthash",
+    version = "2.3.0",
 )
 
 bazel_dep(name = "rules_cc", version = "0.0.9")

@@ -1,0 +1,16 @@
+"""
+Module definition for bazel_misc v0.0.1.
+"""
+
+module(
+    name = "bazel_misc",
+    version = "v0.0.1",
+    compatibility_level = 1,
+)
+
+# Core dependencies
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+bazel_dep(name = "rules_shell", version = "0.6.1")
+bazel_dep(name = "rules_license", version = "1.0.0")
+bazel_dep(name = "rules_python", version = "0.40.0")
+bazel_dep(name = "rules_cc", version = "0.2.14")

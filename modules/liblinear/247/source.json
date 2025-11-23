@@ -8,7 +8,7 @@
     "system": [
         "macos"
     ],
-    "patches": {
-        "add_build_file.patch": "sha256-09pPRZTjP2f95e0T292PD4kBHb1lYyzkAlJS6ZGikUs="
+    "overlay": {
+        "BUILD.bazel": "sha256-3NMIsnXAayGSJ7rGgUNj3GM+Q7JXPjHqyV3V4msENkY="
     }
 }

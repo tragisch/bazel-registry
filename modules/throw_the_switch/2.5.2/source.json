@@ -1,0 +1,11 @@
+{
+    "name": "throw_the_switch",
+    "url": "https://github.com/ThrowTheSwitch/Unity/archive/refs/tags/v2.5.2.tar.gz",
+    "integrity": "sha256-N4bebI84m+OJT+rk99hoCgLnDtTbzONhCcj4ZG2iZxo=",
+    "strip_prefix": "Unity-2.5.2",
+    "path-strip": 1,
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-c7DzxF5DxOEGO884NSq/Ur3ib/yRbQRiIVRvzxTders="
+    }
+}

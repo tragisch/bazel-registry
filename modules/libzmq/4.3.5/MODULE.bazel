@@ -6,4 +6,9 @@ module(
     version = "4.3.5",
 )
 
+bazel_dep(name = "rules_cc", version = "0.2.8")
 bazel_dep(name = "libsodium", version = "1.0.20")
+bazel_dep(name = "sha1", version = "e1e2536fcf6a8f9703be8c85d58724b408552287")
+bazel_dep(name = "boringssl", version = "0.0.0-20240530-2db0eb3")
+bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")

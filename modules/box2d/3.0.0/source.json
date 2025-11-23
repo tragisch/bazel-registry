@@ -5,7 +5,7 @@
     "strip_prefix": "box2d-3.0.0",
     "path-strip": 1,
     "license": "MIT License",
-    "patches": {
-        "add_build_file.patch": "sha256-zqFv0geAFc1ezG0UsQQsaDCk2KhCfINAr4+Q/HQ7d8c="
+    "overlay": {
+        "BUILD.bazel": "sha256-bXubhpr99cZJrWXi+vUAA73j5CCquBRfK6haYobSgzE="
     }
 }

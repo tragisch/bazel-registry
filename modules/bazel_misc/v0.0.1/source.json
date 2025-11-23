@@ -1,0 +1,6 @@
+{
+    "type": "archive",
+    "url": "https://github.com/tragisch/bazel-misc/archive/refs/tags/v0.0.1.tar.gz",
+    "integrity": "sha256-Lm+lDxu3PhXyRQjzjElmr+e1AiGbn0jyxIFOvTOpr4A=",
+    "strip_prefix": "bazel-misc-0.0.1"
+}

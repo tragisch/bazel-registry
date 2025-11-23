@@ -1,0 +1,44 @@
+cc_library(
+    name = "liblinear",
+    srcs = [
+        "linear.cpp",
+        "newton.cpp",
+        "newton.h",
+        "predict.c",
+        "svm-scale.c", 
+        "train.c",
+    ],
+    hdrs = [
+        "linear.h",
+    ],
+    copts = select({
+        "//conditions:default": [
+            "-Wall",
+            "-Wconversion",
+            "-Wno-sign-conversion",
+            "-Wno-deprecated-declarations",
+            "-O3",
+            "-fPIC",
+        ],
+        "@bazel_tools//src/conditions:darwin": [
+            "-Wall",
+            "-Wconversion",
+            "-Wno-sign-conversion", 
+            "-Wno-deprecated-declarations",
+            "-O3",
+            "-fPIC",
+            "-DACCELERATE_NEW_LAPACK",
+        ],
+    }),
+    linkopts = select({
+        "//conditions:default": [],
+        "@bazel_tools//src/conditions:darwin": [
+            "-framework Accelerate",
+        ],
+        "@bazel_tools//src/conditions:linux": [
+            "-lblas",
+            "-llapack",
+        ],
+    }),
+    visibility = ["//visibility:public"],
+)

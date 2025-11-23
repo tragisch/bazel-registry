@@ -1,0 +1,48 @@
+diff --git a/external/sha1/sha1.c b/vendor/sha1/sha1.c
+similarity index 100%
+rename from external/sha1/sha1.c
+rename to vendor/sha1/sha1.c
+diff --git a/external/sha1/sha1.h b/vendor/sha1/sha1.h
+similarity index 100%
+rename from external/sha1/sha1.h
+rename to vendor/sha1/sha1.h
+diff --git a/external/unity/license.txt b/vendor/unity/license.txt
+similarity index 100%
+rename from external/unity/license.txt
+rename to vendor/unity/license.txt
+diff --git a/external/unity/unity.c b/vendor/unity/unity.c
+similarity index 100%
+rename from external/unity/unity.c
+rename to vendor/unity/unity.c
+diff --git a/external/unity/unity.h b/vendor/unity/unity.h
+similarity index 100%
+rename from external/unity/unity.h
+rename to vendor/unity/unity.h
+diff --git a/external/unity/unity_internals.h b/vendor/unity/unity_internals.h
+similarity index 100%
+rename from external/unity/unity_internals.h
+rename to vendor/unity/unity_internals.h
+diff --git a/external/unity/version.txt b/vendor/unity/version.txt
+similarity index 100%
+rename from external/unity/version.txt
+rename to vendor/unity/version.txt
+diff --git a/external/wepoll/README.md b/vendor/wepoll/README.md
+similarity index 100%
+rename from external/wepoll/README.md
+rename to vendor/wepoll/README.md
+diff --git a/external/wepoll/license.txt b/vendor/wepoll/license.txt
+similarity index 100%
+rename from external/wepoll/license.txt
+rename to vendor/wepoll/license.txt
+diff --git a/external/wepoll/version.txt b/vendor/wepoll/version.txt
+similarity index 100%
+rename from external/wepoll/version.txt
+rename to vendor/wepoll/version.txt
+diff --git a/external/wepoll/wepoll.c b/vendor/wepoll/wepoll.c
+similarity index 100%
+rename from external/wepoll/wepoll.c
+rename to vendor/wepoll/wepoll.c
+diff --git a/external/wepoll/wepoll.h b/vendor/wepoll/wepoll.h
+similarity index 100%
+rename from external/wepoll/wepoll.h
+rename to vendor/wepoll/wepoll.h

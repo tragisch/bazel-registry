@@ -1,0 +1,11 @@
+{
+    "name": "uthash",
+    "url": "https://github.com/troydhanson/uthash/archive/refs/tags/v2.3.0.tar.gz",
+    "integrity": "sha256-4QOCq3VRi62DGeuSKtBPkHyyDMy0UaOqmAydAF5mGsw=",
+    "strip_prefix": "uthash-2.3.0",
+    "path-strip": 1,
+    "license": "BSD-revised",
+    "overlay": {
+        "BUILD.bazel": "sha256-lZEh2EumLux98FBKt7P9rGTtdnAbA67HgflCgj6M63k="
+    }
+}

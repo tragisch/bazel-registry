@@ -5,7 +5,7 @@
     "strip_prefix": "sha1-e1e2536fcf6a8f9703be8c85d58724b408552287",
     "path-strip": 1,
     "license": "None",
-    "patches": {
-        "add_build_file.patch": "sha256-TMG5+LkEQEYjCEkVS8cCv27SYfgCes4IedFIW1xtmcI="
+    "overlay": {
+        "BUILD.bazel": "sha256-1rL6ANz1OYV8dNt2KweKQ5kbh+HlqUCNSeQWCuQyjBo="
     }
 }
