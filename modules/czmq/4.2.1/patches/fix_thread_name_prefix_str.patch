@@ -1,0 +1,13 @@
+diff --git a/src/zsys.c b/src/zsys.c
+--- a/src/zsys.c
++++ b/src/zsys.c
+@@ -1665,7 +1665,8 @@ zsys_set_thread_name_prefix_str (const char *prefix)
+         zsys_error ("zsys_set_thread_name_prefix() is not valid after"
+                 " creating sockets");
+     assert (s_open_sockets == 0);
+-    strcpy(s_thread_name_prefix_str, prefix);
++    //  Allow prefix to alias the destination buffer without tripping fortify overlap checks.
++    memmove (s_thread_name_prefix_str, prefix, prefix_len + 1);
+ #if defined (ZMQ_THREAD_NAME_PREFIX) && defined (ZMQ_BUILD_DRAFT_API) && \
+     ((ZMQ_VERSION_MAJOR > 4) || \
+         ((ZMQ_VERSION_MAJOR >= 4) && ((ZMQ_VERSION_MINOR > 3) || \

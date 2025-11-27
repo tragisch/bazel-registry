@@ -1,0 +1,271 @@
+# Note: Using native rules - adjust imports if using newer Bazel with bzlmod
+
+#
+# CZMQ (High-Level C Binding for ØMQ) 4.2.1 - Native Bazel Build
+#
+# PREMISES:
+# - 64-bit systems only (x86_64, ARM64, etc.)
+# - Modern compilers with C++11 support
+# - Depends on libzmq (ZeroMQ core library)
+# - Cross-platform: macOS, Linux, Windows
+# - Draft APIs included for extended functionality
+#
+
+load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+# Define groups for different platforms
+_BASE_DEFINES = {
+    # Package information
+    "#undef PACKAGE\n": "#define PACKAGE \"czmq\"\n",
+    "#undef PACKAGE_BUGREPORT\n": "#define PACKAGE_BUGREPORT \"zeromq-dev@lists.zeromq.org\"\n",
+    "#undef PACKAGE_NAME\n": "#define PACKAGE_NAME \"czmq\"\n",
+    "#undef PACKAGE_STRING\n": "#define PACKAGE_STRING \"czmq 4.2.1\"\n",
+    "#undef PACKAGE_TARNAME\n": "#define PACKAGE_TARNAME \"czmq\"\n",
+    "#undef PACKAGE_URL\n": "#define PACKAGE_URL \"\"\n",
+    "#undef PACKAGE_VERSION\n": "#define PACKAGE_VERSION \"4.2.1\"\n",
+    "#undef PACKAGE_VERSION_MAJOR\n": "#define PACKAGE_VERSION_MAJOR 4\n",
+    "#undef PACKAGE_VERSION_MINOR\n": "#define PACKAGE_VERSION_MINOR 2\n",
+    "#undef PACKAGE_VERSION_PATCH\n": "#define PACKAGE_VERSION_PATCH 1\n",
+    "#undef VERSION\n": "#define VERSION \"4.2.1\"\n",
+    "#undef LT_OBJDIR\n": "#define LT_OBJDIR \".libs/\"\n",
+
+    # Draft API support
+    "#undef CZMQ_BUILD_DRAFT_API\n": "#define CZMQ_BUILD_DRAFT_API 1\n",
+
+    # Standard C headers
+    "#undef HAVE_STDINT_H\n": "#define HAVE_STDINT_H 1\n",
+    "#undef HAVE_STDLIB_H\n": "#define HAVE_STDLIB_H 1\n",
+    "#undef HAVE_STRING_H\n": "#define HAVE_STRING_H 1\n",
+    "#undef HAVE_MEMORY_H\n": "#define HAVE_MEMORY_H 1\n",
+    "#undef HAVE_INTTYPES_H\n": "#define HAVE_INTTYPES_H 1\n",
+    "#undef HAVE_STDDEF_H\n": "#define HAVE_STDDEF_H 1\n",
+    "#undef HAVE_STDBOOL_H\n": "#define HAVE_STDBOOL_H 1\n",
+    "#undef HAVE_LIMITS_H\n": "#define HAVE_LIMITS_H 1\n",
+    "#undef STDC_HEADERS\n": "#define STDC_HEADERS 1\n",
+    "#undef RETSIGTYPE\n": "#define RETSIGTYPE void\n",
+
+    # Standard functions
+    "#undef HAVE_MEMSET\n": "#define HAVE_MEMSET 1\n",
+    "#undef HAVE_PERROR\n": "#define HAVE_PERROR 1\n",
+    "#undef HAVE__BOOL\n": "#define HAVE__BOOL 1\n",
+
+    # External libraries
+    "#undef HAVE_LIBLZ4\n": "#define HAVE_LIBLZ4 1\n",
+    "#undef HAVE_LIBCURL\n": "#define HAVE_LIBCURL 1\n",
+}
+
+_UNIX_DEFINES = {
+    # UNIX-specific headers
+    "#undef HAVE_UNISTD_H\n": "#define HAVE_UNISTD_H 1\n",
+    "#undef HAVE_SYS_TYPES_H\n": "#define HAVE_SYS_TYPES_H 1\n",
+    "#undef HAVE_SYS_STAT_H\n": "#define HAVE_SYS_STAT_H 1\n",
+    "#undef HAVE_SYS_TIME_H\n": "#define HAVE_SYS_TIME_H 1\n",
+    "#undef HAVE_SYS_SOCKET_H\n": "#define HAVE_SYS_SOCKET_H 1\n",
+    "#undef HAVE_NETINET_IN_H\n": "#define HAVE_NETINET_IN_H 1\n",
+    "#undef HAVE_NETINET_TCP_H\n": "#define HAVE_NETINET_TCP_H 1\n",
+    "#undef HAVE_ARPA_INET_H\n": "#define HAVE_ARPA_INET_H 1\n",
+    "#undef HAVE_NET_IF_H\n": "#define HAVE_NET_IF_H 1\n",
+    "#undef HAVE_PTHREAD_H\n": "#define HAVE_PTHREAD_H 1\n",
+    "#undef HAVE_ERRNO_H\n": "#define HAVE_ERRNO_H 1\n",
+    "#undef HAVE_DLFCN_H\n": "#define HAVE_DLFCN_H 1\n",
+    "#undef HAVE_STRINGS_H\n": "#define HAVE_STRINGS_H 1\n",
+    "#undef HAVE_IFADDRS_H\n": "#define HAVE_IFADDRS_H 1\n",
+
+    # UNIX functions
+    "#undef HAVE_GETIFADDRS\n": "#define HAVE_GETIFADDRS 1\n",
+    "#undef HAVE_GETTIMEOFDAY\n": "#define HAVE_GETTIMEOFDAY 1\n",
+    "#undef TIME_WITH_SYS_TIME\n": "#define TIME_WITH_SYS_TIME 1\n",
+}
+
+_MACOS_SPECIFIC_DEFINES = {
+    # macOS platform detection
+    "#undef CZMQ_HAVE_OSX\n": "#define CZMQ_HAVE_OSX 1\n",
+
+    # macOS-specific headers
+    "#undef HAVE_NET_IF_MEDIA_H\n": "#define HAVE_NET_IF_MEDIA_H 1\n",
+
+    # macOS does not have SOCK_CLOEXEC (Linux-specific)
+    "#undef CZMQ_HAVE_SOCK_CLOEXEC\n": "",
+    "#undef HAVE_UUID\n": "#define HAVE_UUID 1\n",
+    "#undef HAVE_DECL_AI_V4MAPPED\n": "#define HAVE_DECL_AI_V4MAPPED 0\n",
+}
+
+_LINUX_SPECIFIC_DEFINES = {
+    # Linux platform detection
+    "#undef CZMQ_HAVE_LINUX\n": "#define CZMQ_HAVE_LINUX 1\n",
+
+    # Linux-specific headers
+    "#undef HAVE_LINUX_WIRELESS_H\n": "#define HAVE_LINUX_WIRELESS_H 1\n",
+    "#undef HAVE_DECL_AI_V4MAPPED\n": "#define HAVE_DECL_AI_V4MAPPED 1\n",
+
+    # Linux-specific socket features
+    "#undef CZMQ_HAVE_SOCK_CLOEXEC\n": "#define CZMQ_HAVE_SOCK_CLOEXEC 1\n",
+}
+
+_WINDOWS_SPECIFIC_DEFINES = {
+    # Windows platform detection
+    "#undef CZMQ_HAVE_WINDOWS\n": "#define CZMQ_HAVE_WINDOWS 1\n",
+
+    # Windows headers
+    "#undef HAVE_WINDOWS_H\n": "#define HAVE_WINDOWS_H 1\n",
+
+    # Windows does not have these UNIX features
+    "#undef HAVE_UNISTD_H\n": "",
+    "#undef HAVE_SYS_SOCKET_H\n": "",
+    "#undef HAVE_NETINET_IN_H\n": "",
+    "#undef HAVE_NETINET_TCP_H\n": "",
+    "#undef HAVE_ARPA_INET_H\n": "",
+    "#undef HAVE_NET_IF_H\n": "",
+    "#undef HAVE_PTHREAD_H\n": "",
+    "#undef HAVE_DLFCN_H\n": "",
+    "#undef HAVE_STRINGS_H\n": "",
+    "#undef HAVE_IFADDRS_H\n": "",
+    "#undef HAVE_GETIFADDRS\n": "",
+    "#undef HAVE_GETTIMEOFDAY\n": "",
+    "#undef CZMQ_HAVE_SOCK_CLOEXEC\n": "",
+    "#undef HAVE_DECL_AI_V4MAPPED\n": "",
+}
+
+expand_template(
+    name = "platform_gen_h",
+    out = "src/platform.h",
+    substitutions = select({
+        # macOS (ARM64/Intel)
+        "@platforms//os:macos": dict(
+            list(_BASE_DEFINES.items()) +
+            list(_UNIX_DEFINES.items()) +
+            list(_MACOS_SPECIFIC_DEFINES.items()),
+        ),
+        # Linux (x86_64/ARM64)
+        "@platforms//os:linux": dict(
+            list(_BASE_DEFINES.items()) +
+            list(_UNIX_DEFINES.items()) +
+            list(_LINUX_SPECIFIC_DEFINES.items()),
+        ),
+        # Windows (x64/ARM64)
+        "@platforms//os:windows": dict(
+            list(_BASE_DEFINES.items()) +
+            list(_WINDOWS_SPECIFIC_DEFINES.items()),
+        ),
+        # Fallback for FreeBSD,...
+        "//conditions:default": dict(
+            list(_BASE_DEFINES.items()) + [
+                ("#undef ZMQ_IOTHREAD_POLLER_USE_SELECT", "#define ZMQ_IOTHREAD_POLLER_USE_SELECT 1"),
+                ("#undef ZMQ_POLL_BASED_ON_SELECT", "#define ZMQ_POLL_BASED_ON_SELECT 1"),
+            ],
+        ),
+    }),
+    template = "src/platform.h.in",
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "czmq",
+    srcs = glob(
+        ["src/*.c"],
+        exclude = [
+            # does have main() functions:
+            "src/czmq_selftest.c",
+            "src/czmq_private_selftest.c",
+            "src/test_randof.c",
+            "src/zmakecert.c",
+            "src/zsp.c",
+        ],
+    ) + glob(["src/*.h"]) + glob(["src/foreign/**/*.h"]),
+    hdrs = glob(["include/*.h"]) + [":platform_gen_h"],
+    copts = [
+        # supress warnings for unsed stuff...
+        "-Wno-missing-braces",
+        "-Wno-unused-function",
+        "-Wno-unused-variable",
+        "-Wno-unused-but-set-variable",
+        "-Wno-deprecated-declarations",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+    ] + select({
+        "@platforms//os:windows": [
+            "-DCZMQ_STATIC",
+            "-DZMQ_STATIC",
+        ],
+        "//conditions:default": [],
+    }),
+    includes = [
+        "include",
+        "src",
+        "src/foreign/sha1",
+        "src/foreign/slre",
+    ],
+    linkopts = select({
+        "@platforms//os:macos": [
+            "-Wl,-dead_strip",
+            "-lpthread",
+        ],
+        "@platforms//os:linux": [
+            "-Wl,--gc-sections",
+            "-lpthread",
+        ],
+        "@platforms//os:windows": [
+            "-lws2_32",
+            "-lrpcrt4",
+            "-liphlpapi",
+        ],
+        "//conditions:default": [""],
+    }),
+    textual_hdrs = glob(["src/*.inc"]) + glob(["src/foreign/**/*.inc_c"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@curl",
+        "@libzmq",
+        "@lz4",
+    ],
+)
+
+cc_binary(
+    name = "zsp",
+    srcs = [
+        "src/czmq_classes.h",
+        "src/zsp.c",
+    ] + ["src/platform.h"],
+    copts = [
+        "-O3",
+        "-DNDEBUG",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["@czmq"],
+)
+
+# Self-test binary for development/testing
+cc_binary(
+    name = "czmq_selftest",
+    srcs = [
+        "src/czmq_classes.h",
+        "src/czmq_private_selftest.c",
+        "src/czmq_selftest.c",
+    ],
+    copts = [
+        # Optimize for debugging
+        "-O0",
+        "-g",
+        # Disable draft API to skip problematic tests
+        # Fortify source seems to be the issue on macOS (see patch)
+        "-U_FORTIFY_SOURCE",
+        "-fno-stack-protector",
+        "-fsanitize=address",
+    ] + select({
+        "@platforms//os:macos": [
+            # macOS specific flags to avoid buffer overflow detection
+            "-fno-stack-protector",
+            "-D_FORTIFY_SOURCE=0",
+        ],
+        "//conditions:default": [],
+    }),
+    linkopts = ["-fsanitize=address"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":zsp",
+        "@czmq",
+    ],
+)

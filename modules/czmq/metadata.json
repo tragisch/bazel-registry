@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/zeromq/czmq",
+    "description": "High-level C binding for ZeroMQ.",
+    "versions": [
+        "4.2.1"
+    ]
+}

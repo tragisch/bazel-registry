@@ -1,0 +1,11 @@
+--- a/src/zdigest.c
++++ b/src/zdigest.c
+@@ -29,7 +29,7 @@
+ #include <sechash.h>
+ #define SHA_DIGEST_LENGTH 20
+ #else
+-#include "foreign/sha1/sha1.inc_c"
++#include "sha1.inc_c"
+ #endif
+ 
+ 

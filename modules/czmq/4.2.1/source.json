@@ -1,0 +1,15 @@
+{
+    "type": "archive",
+    "url": "https://github.com/zeromq/czmq/releases/download/v4.2.1/czmq-4.2.1.tar.gz",
+    "integrity": "sha256-XXIKIEwqWGRdb3ZDrxXVY6cS2tmMnTLB7ZEzd9qmrDk=",
+    "strip_prefix": "czmq-4.2.1",
+    "patches": {
+        "fix_sha1_include.patch": "sha256-5x0pToKd+oeBBATGl4ZoztCPa1SOC3GHYAXJYWLZ2Ng=",
+        "fix_thread_name_prefix_str.patch": "sha256-1vS79Z0igm0Tr6Yo/u1hjXFyc+/cMVVVMjT2pNCLr2A=",
+        "fix_zdigest_include.patch": "sha256-GwYqmB8mvjuwOSBnrME64ct4Q5F//XyFMUQeSUeOsx8="
+    },
+    "overlay": {
+        "BUILD.bazel": "sha256-wK5MPLQltuiCh9adsDj/FQyrhzwb/BAbbBctPeBB+qI="
+    },
+    "patch_strip": 1
+}
