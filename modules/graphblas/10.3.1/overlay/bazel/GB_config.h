@@ -1,12 +1,16 @@
 //------------------------------------------------------------------------------
-// bazel/GB_config.h: Bazel configuration for a native macOS GraphBLAS build
+// bazel/GB_config.h: Bazel configuration for GraphBLAS (macOS + Linux)
 //------------------------------------------------------------------------------
 
 #ifndef GB_CONFIG_H
 #define GB_CONFIG_H
 
 #ifndef GB_C_COMPILER
+#if defined(__APPLE__)
 #define GB_C_COMPILER "bazel-apple-clang"
+#else
+#define GB_C_COMPILER "bazel-gcc"
+#endif
 #endif
 
 #ifndef GB_C_FLAGS
@@ -22,7 +26,11 @@
 #endif
 
 #ifndef GB_LIB_SUFFIX
+#if defined(__APPLE__)
 #define GB_LIB_SUFFIX ".dylib"
+#else
+#define GB_LIB_SUFFIX ".so"
+#endif
 #endif
 
 #ifndef GB_OBJ_SUFFIX

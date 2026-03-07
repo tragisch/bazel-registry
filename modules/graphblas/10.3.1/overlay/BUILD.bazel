@@ -5,6 +5,23 @@ package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
+# --- Platform detection ---
+
+config_setting(
+    name = "macos",
+    constraint_values = ["@platforms//os:macos"],
+)
+
+config_setting(
+    name = "linux_x86_64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+# --- OpenMP feature flag ---
+
 bool_flag(
     name = "enable_openmp",
     build_setting_default = False,
@@ -95,8 +112,12 @@ GRAPHBLAS_INCLUDES = [
     "Source/werk",
 ]
 
-GRAPHBLAS_OPENMP_COPTS = [
+GRAPHBLAS_OPENMP_COPTS_MACOS = [
     "-Xpreprocessor",
+    "-fopenmp",
+]
+
+GRAPHBLAS_OPENMP_COPTS_LINUX = [
     "-fopenmp",
 ]
 
@@ -108,17 +129,31 @@ cc_library(
         "-std=c11",
         "-I.",
     ] + select({
-        ":openmp_enabled": GRAPHBLAS_OPENMP_COPTS,
+        ":openmp_enabled": select({
+            ":macos": GRAPHBLAS_OPENMP_COPTS_MACOS,
+            ":linux_x86_64": GRAPHBLAS_OPENMP_COPTS_LINUX,
+            "//conditions:default": GRAPHBLAS_OPENMP_COPTS_LINUX,
+        }),
         "//conditions:default": [],
     }),
     includes = GRAPHBLAS_INCLUDES,
+    linkopts = select({
+        ":linux_x86_64": [
+            "-lm",
+            "-ldl",
+        ],
+        "//conditions:default": [],
+    }),
     local_defines = [
         "GBNCPUFEAT=1",
         "NJIT",
     ],
     textual_hdrs = GRAPHBLAS_TEXTUAL_HDRS,
     deps = select({
-        ":openmp_enabled": ["@homebrew_libomp//:libomp"],
+        ":openmp_enabled": select({
+            ":macos": ["@homebrew_libomp//:libomp"],
+            "//conditions:default": ["@system_openmp//:openmp"],
+        }),
         "//conditions:default": [],
     }),
 )
@@ -131,9 +166,11 @@ cc_library(
 
 cc_binary(
     name = "graphblas_dylib",
-    linkopts = [
-        "-Wl,-install_name,@rpath/libgraphblas_dylib.dylib",
-    ],
+    linkopts = select({
+        ":macos": ["-Wl,-install_name,@rpath/libgraphblas_dylib.dylib"],
+        ":linux_x86_64": ["-Wl,-soname,libgraphblas.so"],
+        "//conditions:default": [],
+    }),
     linkshared = True,
     deps = [":graphblas"],
 )

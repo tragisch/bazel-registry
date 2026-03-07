@@ -4,6 +4,7 @@ module(
 )
 
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "platforms", version = "0.0.10")
 bazel_dep(name = "rules_cc", version = "0.2.14")
 
 homebrew_libomp_repository = use_repo_rule(
@@ -13,4 +14,13 @@ homebrew_libomp_repository = use_repo_rule(
 
 homebrew_libomp_repository(
     name = "homebrew_libomp",
+)
+
+system_openmp_repository = use_repo_rule(
+    "//tools:homebrew_libomp_repo.bzl",
+    "system_openmp_repository",
+)
+
+system_openmp_repository(
+    name = "system_openmp",
 )
