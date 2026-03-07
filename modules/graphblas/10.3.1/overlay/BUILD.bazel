@@ -1,3 +1,4 @@
+load("@bazel_skylib//lib:selects.bzl", "selects")
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 
@@ -30,6 +31,24 @@ bool_flag(
 config_setting(
     name = "openmp_enabled",
     flag_values = {":enable_openmp": "True"},
+)
+
+# --- Combined config_settings: OpenMP + Platform ---
+
+selects.config_setting_group(
+    name = "openmp_macos",
+    match_all = [
+        ":openmp_enabled",
+        ":macos",
+    ],
+)
+
+selects.config_setting_group(
+    name = "openmp_linux_x86_64",
+    match_all = [
+        ":openmp_enabled",
+        ":linux_x86_64",
+    ],
 )
 
 GRAPHBLAS_SRCS = glob(
@@ -129,11 +148,8 @@ cc_library(
         "-std=c11",
         "-I.",
     ] + select({
-        ":openmp_enabled": select({
-            ":macos": GRAPHBLAS_OPENMP_COPTS_MACOS,
-            ":linux_x86_64": GRAPHBLAS_OPENMP_COPTS_LINUX,
-            "//conditions:default": GRAPHBLAS_OPENMP_COPTS_LINUX,
-        }),
+        ":openmp_macos": GRAPHBLAS_OPENMP_COPTS_MACOS,
+        ":openmp_linux_x86_64": GRAPHBLAS_OPENMP_COPTS_LINUX,
         "//conditions:default": [],
     }),
     includes = GRAPHBLAS_INCLUDES,
@@ -150,10 +166,8 @@ cc_library(
     ],
     textual_hdrs = GRAPHBLAS_TEXTUAL_HDRS,
     deps = select({
-        ":openmp_enabled": select({
-            ":macos": ["@homebrew_libomp//:libomp"],
-            "//conditions:default": ["@system_openmp//:openmp"],
-        }),
+        ":openmp_macos": ["@homebrew_libomp//:libomp"],
+        ":openmp_linux_x86_64": ["@system_openmp//:openmp"],
         "//conditions:default": [],
     }),
 )
