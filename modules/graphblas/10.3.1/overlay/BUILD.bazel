@@ -1,0 +1,145 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+bool_flag(
+    name = "enable_openmp",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "openmp_enabled",
+    flag_values = {":enable_openmp": "True"},
+)
+
+GRAPHBLAS_SRCS = glob(
+    [
+        "Config/*.c",
+        "FactoryKernels/*.c",
+        "PreJIT/*.c",
+        "Source/*/*.c",
+    ],
+    allow_empty = True,
+    exclude = [
+        "Source/cpu/*.c",
+    ],
+) + [
+    "bazel/GB_JITpackage.c",
+]
+
+GRAPHBLAS_HDRS = glob([
+    "FactoryKernels/**/*.h",
+    "Include/**/*.h",
+    "JITpackage/**/*.h",
+    "Source/**/*.h",
+    "lz4/**/*.h",
+    "zstd/**/*.h",
+    "xxHash/**/*.h",
+]) + [
+    "bazel/GB_config.h",
+]
+
+GRAPHBLAS_TEXTUAL_HDRS = glob([
+    "Source/*/factory/**/*",
+    "lz4/*.c",
+    "Source/*/template/**/*",
+    "zstd/zstd_subset/**/*.c",
+])
+
+GRAPHBLAS_INCLUDES = [
+    "Include",
+    "JITpackage",
+    "Source",
+    "bazel",
+    "Config",
+    "lz4",
+    "zstd",
+    "zstd/zstd_subset",
+    "xxHash",
+    "Source/add",
+    "Source/apply",
+    "Source/assign",
+    "Source/builder",
+    "Source/builtin",
+    "Source/callback",
+    "Source/concat",
+    "Source/convert",
+    "Source/cumsum",
+    "Source/emult",
+    "Source/ewise",
+    "Source/extract",
+    "Source/hyper",
+    "Source/ij",
+    "Source/jit_kernels",
+    "Source/kronecker",
+    "Source/mask",
+    "Source/math",
+    "Source/matrix",
+    "Source/memory",
+    "Source/monoid",
+    "Source/mxm",
+    "Source/ok",
+    "Source/omp",
+    "Source/print",
+    "Source/reduce",
+    "Source/select",
+    "Source/slice",
+    "Source/sort",
+    "Source/split",
+    "Source/transpose",
+    "Source/type",
+    "Source/wait",
+    "Source/werk",
+]
+
+GRAPHBLAS_OPENMP_COPTS = [
+    "-Xpreprocessor",
+    "-fopenmp",
+]
+
+cc_library(
+    name = "graphblas",
+    srcs = GRAPHBLAS_SRCS,
+    hdrs = GRAPHBLAS_HDRS,
+    copts = [
+        "-std=c11",
+        "-I.",
+    ] + select({
+        ":openmp_enabled": GRAPHBLAS_OPENMP_COPTS,
+        "//conditions:default": [],
+    }),
+    includes = GRAPHBLAS_INCLUDES,
+    local_defines = [
+        "GBNCPUFEAT=1",
+        "NJIT",
+    ],
+    textual_hdrs = GRAPHBLAS_TEXTUAL_HDRS,
+    deps = select({
+        ":openmp_enabled": ["@homebrew_libomp//:libomp"],
+        "//conditions:default": [],
+    }),
+)
+
+cc_library(
+    name = "simple_rand",
+    hdrs = ["Demo/Include/simple_rand.h"],
+    strip_include_prefix = "Demo/Include",
+)
+
+cc_binary(
+    name = "graphblas_dylib",
+    linkopts = [
+        "-Wl,-install_name,@rpath/libgraphblas_dylib.dylib",
+    ],
+    linkshared = True,
+    deps = [":graphblas"],
+)
+
+cc_binary(
+    name = "simple_demo",
+    srcs = ["Demo/Program/simple_demo.c"],
+    deps = [":simple_rand"],
+)

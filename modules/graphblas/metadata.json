@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/DrTimothyAldenDavis/GraphBLAS",
+    "description": "SuiteSparse:GraphBLAS – a complete implementation of the GraphBLAS standard.",
+    "versions": [
+        "10.3.1"
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "name": "graphblas",
+    "url": "https://github.com/DrTimothyAldenDavis/GraphBLAS/archive/refs/tags/v10.3.1.tar.gz",
+    "integrity": "sha256-o8Ted19H2bRI0PVII0psMhxF+falTjLJ46QbKN9VzQo=",
+    "strip_prefix": "GraphBLAS-10.3.1",
+    "path-strip": 1,
+    "license": "Apache-2.0",
+    "overlay": {
+        "BUILD.bazel": "sha256-DVJn6335caIfFQ6gdSN8Nhlxd9GvBZv9RfjQ+XFePUM=",
+        "bazel/GB_config.h": "sha256-s2rAK0ti/D4lZ/X1kunLp/iYxa/1RNEuvkG6E3XILfk=",
+        "bazel/GB_JITpackage.c": "sha256-YZxHHixvBpXPWhBZjMB+4jqPbsk6FnHgj/RAwpwV0+A=",
+        "tools/BUILD.bazel": "sha256-2CTx94V0mb5wdlhzBH6tTBDJevXNNxvYzob21bYhXUs=",
+        "tools/homebrew_libomp_repo.bzl": "sha256-g8zfi5iRgcunQrgZHOKk6hoX/WzL7c8QyeSEeIP9AdY="
+    }
+}
