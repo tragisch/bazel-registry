@@ -10,6 +10,6 @@
         "bazel/GB_config.h": "sha256-RqyptmOFBEPyht4gnycoR1X3mkkrz55DXYzlwdAi3T8=",
         "bazel/GB_JITpackage.c": "sha256-YZxHHixvBpXPWhBZjMB+4jqPbsk6FnHgj/RAwpwV0+A=",
         "tools/BUILD.bazel": "sha256-2CTx94V0mb5wdlhzBH6tTBDJevXNNxvYzob21bYhXUs=",
-        "tools/homebrew_libomp_repo.bzl": "sha256-k4E0qIQnLKL8w1nne2us8TFEex7UkWApzjPkheEtpg="
+        "tools/homebrew_libomp_repo.bzl": "sha256-k4E0qIQnLKL8w1nne2us8TFEex7UkWApzjPkhPeEtpg="
     }
 }
