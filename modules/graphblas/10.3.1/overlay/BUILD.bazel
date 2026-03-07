@@ -146,7 +146,11 @@ cc_library(
     hdrs = GRAPHBLAS_HDRS,
     copts = [
         "-std=c11",
+        "-O3",
         "-I.",
+        "-Wno-unused-function",
+        "-Wno-unused-but-set-variable",
+        "-Wno-unused-variable",
     ] + select({
         ":openmp_macos": GRAPHBLAS_OPENMP_COPTS_MACOS,
         ":openmp_linux_x86_64": GRAPHBLAS_OPENMP_COPTS_LINUX,
