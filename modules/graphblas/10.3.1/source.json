@@ -6,7 +6,7 @@
     "path-strip": 1,
     "license": "Apache-2.0",
     "overlay": {
-        "BUILD.bazel": "sha256-tzeOuLPPj4NtgpGmcsKihJF/MeI9qk4xkRFYUFF7Utw=",
+        "BUILD.bazel": "sha256-HPT1Iv2WKcFgqdJpMxQLp4utVp5Xg0ekM46vY1GleMM=",
         "bazel/GB_config.h": "sha256-RqyptmOFBEPyht4gnycoR1X3mkkrz55DXYzlwdAi3T8=",
         "bazel/GB_JITpackage.c": "sha256-YZxHHixvBpXPWhBZjMB+4jqPbsk6FnHgj/RAwpwV0+A=",
         "tools/BUILD.bazel": "sha256-2CTx94V0mb5wdlhzBH6tTBDJevXNNxvYzob21bYhXUs=",
