@@ -6,6 +6,6 @@
     "path-strip": 1,
     "license": "MIT License",
     "overlay": {
-        "BUILD.bazel": "sha256-bXubhpr99cZJrWXi+vUAA73j5CCquBRfK6haYobSgzE="
+        "BUILD.bazel": "sha256-k5Ah/ZNzQiuthQjjJEQf7Y72PbZmU7y9aWd62msV2+w="
     }
 }

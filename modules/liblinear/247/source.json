@@ -9,6 +9,6 @@
         "macos"
     ],
     "overlay": {
-        "BUILD.bazel": "sha256-3NMIsnXAayGSJ7rGgUNj3GM+Q7JXPjHqyV3V4msENkY="
+        "BUILD.bazel": "sha256-Wtfpca0FK2iCb98INLWuB3SeZNHAck0aQrc4f2+ZLak="
     }
 }

@@ -1,3 +1,5 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 cc_library(
     name = "liblinear",
     srcs = [
@@ -5,7 +7,7 @@ cc_library(
         "newton.cpp",
         "newton.h",
         "predict.c",
-        "svm-scale.c", 
+        "svm-scale.c",
         "train.c",
     ],
     hdrs = [
@@ -23,7 +25,7 @@ cc_library(
         "@bazel_tools//src/conditions:darwin": [
             "-Wall",
             "-Wconversion",
-            "-Wno-sign-conversion", 
+            "-Wno-sign-conversion",
             "-Wno-deprecated-declarations",
             "-O3",
             "-fPIC",

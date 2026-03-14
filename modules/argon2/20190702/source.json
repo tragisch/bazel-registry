@@ -6,6 +6,6 @@
     "path-strip": 1,
     "license": "Apache-2.0",
     "overlay": {
-        "BUILD.bazel": "sha256-ofitxMuEFHq5fTuX4Ssu/MDiPUSaPFDjfC+otRGKQqI="
+        "BUILD.bazel": "sha256-68gf+Bvk3aUklAKZFDiQ+J0nU1G4d2/muiRDy4FFtPM="
     }
 }
