@@ -14,24 +14,106 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  determine-modules:
+    name: Determine modules to test
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+      count: ${{ steps.select.outputs.count }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: select
+        name: Select changed modules
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          all_modules=$(cat <<'JSON'
+          [
+            {"name":"argon2","version":"20190702","target":"@argon2//:argon2","command":"build"},
+            {"name":"argtable3","version":"3.2.2","target":"@argtable3//:argtable3","command":"build"},
+            {"name":"box2d","version":"3.0.0","target":"@box2d//:box2d","command":"build"},
+            {"name":"graphblas","version":"10.3.1","target":"@graphblas//:graphblas","command":"build"},
+            {"name":"liblinear","version":"247","target":"@liblinear//:liblinear","command":"build"},
+            {"name":"libsodium","version":"1.0.20","target":"@libsodium//:libsodium","command":"build"},
+            {"name":"libzmq","version":"4.3.5","target":"@libzmq//:libzmq","command":"build"},
+            {"name":"czmq","version":"4.2.1","target":"@czmq//:czmq","command":"build"},
+            {"name":"openmp","version":"22.1.1","target":"@openmp//:omp_smoke_test","command":"test"},
+            {"name":"raylib","version":"5.5","target":"@raylib//:raylib","command":"build"},
+            {"name":"sha1","version":"e1e2536fcf6a8f9703be8c85d58724b408552287","target":"@sha1//:sha1","command":"build"},
+            {"name":"uthash","version":"2.3.0","target":"@uthash//:uthash","command":"build"}
+          ]
+          JSON
+          )
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base_sha="${{ github.event.pull_request.base.sha }}"
+          else
+            base_sha="${{ github.event.before }}"
+          fi
+          head_sha="${{ github.sha }}"
+
+          if [[ -n "$base_sha" && "$base_sha" != "0000000000000000000000000000000000000000" ]]; then
+            mapfile -t changed_files < <(git diff --name-only "$base_sha" "$head_sha")
+          else
+            mapfile -t changed_files < <(git ls-files)
+          fi
+
+          declare -A changed_modules=()
+          run_all=false
+
+          for path in "${changed_files[@]}"; do
+            [[ -z "$path" ]] && continue
+
+            if [[ "$path" =~ ^modules/([^/]+)/ ]]; then
+              changed_modules["${BASH_REMATCH[1]}"]=1
+              continue
+            fi
+
+            case "$path" in
+              README.md)
+                ;;
+              .github/workflows/test-registry.yml|bazel_registry.json|test/*|.github/actions/*|.github/workflows/*)
+                run_all=true
+                ;;
+              *)
+                run_all=true
+                ;;
+            esac
+          done
+
+          if [[ "${#changed_files[@]}" -eq 0 ]]; then
+            run_all=true
+          fi
+
+          if [[ "$run_all" == true ]]; then
+            selected_modules="$all_modules"
+          elif [[ "${#changed_modules[@]}" -eq 0 ]]; then
+            selected_modules='[]'
+          else
+            changed_module_names=$(printf '%s\n' "${!changed_modules[@]}" | sort | jq -R . | jq -s .)
+            selected_modules=$(jq --argjson names "$changed_module_names" '[.[] | select(.name as $name | $names | index($name))]' <<<"$all_modules")
+          fi
+
+          count=$(jq 'length' <<<"$selected_modules")
+          matrix=$(jq -cn \
+            --argjson modules "$selected_modules" \
+            '{os: ["ubuntu-latest", "macos-latest"], module: $modules}')
+
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
   build-module:
+    needs: determine-modules
+    if: needs.determine-modules.outputs.count != '0'
     name: ${{ matrix.module.name }} (${{ matrix.os }})
     strategy:
       fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        module:
-          - { name: argon2,      version: "20190702",  target: "@argon2//:argon2" }
-          - { name: argtable3,   version: "3.2.2",     target: "@argtable3//:argtable3" }
-          - { name: box2d,       version: "3.0.0",     target: "@box2d//:box2d" }
-          - { name: graphblas,   version: "10.3.1",    target: "@graphblas//:graphblas" }
-          - { name: liblinear,   version: "247",       target: "@liblinear//:liblinear" }
-          - { name: libsodium,   version: "1.0.20",    target: "@libsodium//:libsodium" }
-          - { name: libzmq,      version: "4.3.5",     target: "@libzmq//:libzmq" }
-          - { name: czmq,        version: "4.2.1",     target: "@czmq//:czmq" }
-          - { name: raylib,      version: "5.5",       target: "@raylib//:raylib" }
-          - { name: sha1,        version: "e1e2536fcf6a8f9703be8c85d58724b408552287", target: "@sha1//:sha1" }
-          - { name: uthash,      version: "2.3.0",     target: "@uthash//:uthash" }
+      matrix: ${{ fromJson(needs.determine-modules.outputs.matrix) }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -55,11 +137,21 @@ jobs:
             > /tmp/build-test/MODULE.bazel
           touch /tmp/build-test/BUILD.bazel
 
-      - name: Build ${{ matrix.module.name }}@${{ matrix.module.version }}
+      - name: ${{ matrix.module.command == 'test' && 'Test' || 'Build' }} ${{ matrix.module.name }}@${{ matrix.module.version }}
         working-directory: /tmp/build-test
         run: |
-          bazel build \
+          bazel ${{ matrix.module.command }} \
             --registry=file://${{ github.workspace }} \
             --registry=https://bcr.bazel.build \
             ${{ matrix.module.target }}
         timeout-minutes: 20
+
+  no-module-changes:
+    needs: determine-modules
+    if: needs.determine-modules.outputs.count == '0'
+    name: No registry module changes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Report skipped module builds
+        run: echo "No registry module changes detected; skipping module build matrix."

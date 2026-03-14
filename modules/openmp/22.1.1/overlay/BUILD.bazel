@@ -1,0 +1,192 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+load("@rules_python//python:defs.bzl", "py_binary")
+load(":libomp_sources.bzl", "LIBOMP_PLATFORM_TEMPLATE_DEFINES", "LIBOMP_RUNTIME_SRCS", "render_template_cmd")
+
+licenses(["notice"])
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "linux_x86_64",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+)
+
+config_setting(
+    name = "macos_arm64",
+    constraint_values = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:macos",
+    ],
+)
+
+py_binary(
+    name = "render_openmp_template",
+    srcs = ["tools/render_openmp_template.py"],
+    main = "tools/render_openmp_template.py",
+    visibility = ["//visibility:private"],
+)
+
+py_binary(
+    name = "message_converter",
+    srcs = [
+        "runtime/tools/libomputils.py",
+        "runtime/tools/message-converter.py",
+    ],
+    imports = ["runtime/tools"],
+    main = "runtime/tools/message-converter.py",
+    visibility = ["//visibility:private"],
+)
+
+genrule(
+    name = "omp_h",
+    srcs = ["runtime/src/include/omp.h.var"],
+    outs = ["generated/omp.h"],
+    cmd = select({
+        ":linux_x86_64": render_template_cmd(
+            ":render_openmp_template",
+            "runtime/src/include/omp.h.var",
+            LIBOMP_PLATFORM_TEMPLATE_DEFINES["linux_x86_64"],
+        ),
+        ":macos_arm64": render_template_cmd(
+            ":render_openmp_template",
+            "runtime/src/include/omp.h.var",
+            LIBOMP_PLATFORM_TEMPLATE_DEFINES["macos_arm64"],
+        ),
+        "//conditions:default": "echo unsupported target platform for libomp >$@ && exit 1",
+    }),
+    tools = [":render_openmp_template"],
+)
+
+genrule(
+    name = "ompx_h",
+    srcs = ["runtime/src/include/ompx.h.var"],
+    outs = ["generated/ompx.h"],
+    cmd = select({
+        ":linux_x86_64": render_template_cmd(
+            ":render_openmp_template",
+            "runtime/src/include/ompx.h.var",
+            LIBOMP_PLATFORM_TEMPLATE_DEFINES["linux_x86_64"],
+        ),
+        ":macos_arm64": render_template_cmd(
+            ":render_openmp_template",
+            "runtime/src/include/ompx.h.var",
+            LIBOMP_PLATFORM_TEMPLATE_DEFINES["macos_arm64"],
+        ),
+        "//conditions:default": "echo unsupported target platform for libomp >$@ && exit 1",
+    }),
+    tools = [":render_openmp_template"],
+)
+
+genrule(
+    name = "kmp_config_h",
+    srcs = ["runtime/src/kmp_config.h.cmake"],
+    outs = ["generated/kmp_config.h"],
+    cmd = select({
+        ":linux_x86_64": render_template_cmd(
+            ":render_openmp_template",
+            "runtime/src/kmp_config.h.cmake",
+            LIBOMP_PLATFORM_TEMPLATE_DEFINES["linux_x86_64"],
+        ),
+        ":macos_arm64": render_template_cmd(
+            ":render_openmp_template",
+            "runtime/src/kmp_config.h.cmake",
+            LIBOMP_PLATFORM_TEMPLATE_DEFINES["macos_arm64"],
+        ),
+        "//conditions:default": "echo unsupported target platform for libomp >$@ && exit 1",
+    }),
+    tools = [":render_openmp_template"],
+)
+
+genrule(
+    name = "kmp_i18n_id_inc",
+    srcs = ["runtime/src/i18n/en_US.txt"],
+    outs = ["generated/kmp_i18n_id.inc"],
+    cmd = "$(location :message_converter) --enum=$@ $(location runtime/src/i18n/en_US.txt)",
+    tools = [":message_converter"],
+)
+
+genrule(
+    name = "kmp_i18n_default_inc",
+    srcs = ["runtime/src/i18n/en_US.txt"],
+    outs = ["generated/kmp_i18n_default.inc"],
+    cmd = "$(location :message_converter) --default=$@ $(location runtime/src/i18n/en_US.txt)",
+    tools = [":message_converter"],
+)
+
+cc_library(
+    name = "libomp_headers",
+    hdrs = [
+        ":omp_h",
+        ":ompx_h",
+    ],
+    includes = ["generated"],
+)
+
+cc_library(
+    name = "libomp_internal_headers",
+    hdrs = [":kmp_config_h"],
+    includes = [
+        "generated",
+        "runtime/src",
+        "runtime/src/i18n",
+        "runtime/src/thirdparty/ittnotify",
+    ],
+    textual_hdrs = glob(["runtime/src/**/*.h"]) + [
+        ":kmp_i18n_default_inc",
+        ":kmp_i18n_id_inc",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "libomp_runtime_static",
+    srcs = LIBOMP_RUNTIME_SRCS,
+    copts = [
+        "-D_GNU_SOURCE",
+        "-D_REENTRANT",
+        "-D_GLIBCXX_NO_ASSERTIONS",
+        "-U_GLIBCXX_ASSERTIONS",
+        "-fno-exceptions",
+        "-fno-rtti",
+        "-std=c++17",
+    ] + select({
+        ":linux_x86_64": ["-DLIBOMP_HAVE_PTHREAD_SETNAME_NP"],
+        ":macos_arm64": ["-DLIBOMP_HAVE_PTHREAD_SETNAME_NP"],
+        "//conditions:default": [],
+    }),
+    implementation_deps = [":libomp_internal_headers"],
+    linkopts = select({
+        ":linux_x86_64": [
+            "-ldl",
+            "-lm",
+            "-pthread",
+        ],
+        ":macos_arm64": [],
+        "//conditions:default": [],
+    }),
+    deps = [":libomp_headers"],
+)
+
+alias(
+    name = "libomp",
+    actual = ":libomp_runtime_static",
+)
+
+cc_test(
+    name = "omp_smoke_test",
+    srcs = ["runtime/test/omp_smoke.c"],
+    copts = select({
+        ":linux_x86_64": ["-fopenmp"],
+        ":macos_arm64": [
+            "-Xpreprocessor",
+            "-fopenmp",
+        ],
+        "//conditions:default": [],
+    }),
+    deps = [":libomp"],
+)

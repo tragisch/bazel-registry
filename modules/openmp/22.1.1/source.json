@@ -1,0 +1,18 @@
+{
+    "name": "openmp",
+    "url": "https://github.com/llvm/llvm-project/releases/download/llvmorg-22.1.1/llvm-project-22.1.1.src.tar.xz",
+    "integrity": "sha256-nG839vX2jTj0NdJfdw/EjGLZKyQSIFdnoW2sLJQvDJU=",
+    "strip_prefix": "llvm-project-22.1.1.src/openmp",
+    "path-strip": 1,
+    "license": "Apache-2.0 WITH LLVM-exception",
+    "system": [
+        "linux",
+        "macos"
+    ],
+    "overlay": {
+        "BUILD.bazel": "sha256-pAZbP1FcMY+pP8Gx3gtCu6k+TAj0Tuwu3K3W+0dO2dQ=",
+        "libomp_sources.bzl": "sha256-27YkOFqRuUUu7CWyjoEUi8xj+leMkHO2PVKUtKiYPU8=",
+        "tools/render_openmp_template.py": "sha256-FfMeFq0WBCV7dgJ5labGN0atO2Lw7XL2+TcYP4cXksY=",
+        "runtime/test/omp_smoke.c": "sha256-tj8TeFc5l8EMCBypI7JsDzq1HJ+KUUAa3ZADKTNApWA="
+    }
+}

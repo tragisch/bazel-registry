@@ -1,0 +1,7 @@
+{
+    "homepage": "https://openmp.llvm.org/",
+    "description": "LLVM OpenMP runtime packaged as a native Bazel module with a static libomp target.",
+    "versions": [
+        "22.1.1"
+    ]
+}

@@ -28,9 +28,12 @@ common --registry=https://bcr.bazel.build
 | [liblinear](https://github.com/cjlin1/liblinear)              | 247      | A library for large linear classification                                   | ✅     |
 | [libsodium](https://github.com/jedisct1/libsodium)            | 1.0.20   | Portable, cross-compilable crypto library (NaCl-compatible)                 | ✅     |
 | [libzmq](https://github.com/zeromq/libzmq/)                   | 4.3.5    | High-performance asynchronous messaging library                             | ✅     |
+| [openmp](https://openmp.llvm.org/)                            | 22.1.1   | LLVM OpenMP runtime as native Bazel module with static `libomp`             | ✅     |
 | [raylib](https://github.com/raysan5/raylib)                   | 5.5      | Simple library to enjoy videogames programming                              | ✅     |
 | [sha1](https://github.com/clibs/sha1)                         | e1e2536  | NIST Secure Hash Algorithm (SHA-1) implementation                           | ✅     |
 | [throw_the_switch](https://github.com/ThrowTheSwitch/Unity)   | 2.5.2    | Unity – simple unit testing framework for C                                 | ✅     |
 | [uthash](https://github.com/troydhanson/uthash)               | 2.3.0    | C macros for hash tables and more                                           | ✅     |
+
+`openmp` exposes the static runtime target `@openmp//:libomp` and is validated in CI via `@openmp//:omp_smoke_test`.
 
 ![Test Registry](https://github.com/tragisch/bazel-registry/actions/workflows/test-registry.yml/badge.svg)
