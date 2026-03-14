@@ -1,7 +1,10 @@
 """
 box2d module
 """
+
 module(
     name = "box2d",
     version = "3.0.0",
 )
+
+bazel_dep(name = "rules_cc", version = "0.2.8")
