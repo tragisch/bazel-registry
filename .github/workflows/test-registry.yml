@@ -45,10 +45,13 @@ jobs:
             {"name":"openmp","version":"22.1.1","target":"@openmp//:omp_smoke_test","command":"test"},
             {"name":"raylib","version":"5.5","target":"@raylib//:raylib","command":"build"},
             {"name":"sha1","version":"e1e2536fcf6a8f9703be8c85d58724b408552287","target":"@sha1//:sha1","command":"build"},
+            {"name":"throw_the_switch","version":"2.5.2","target":"@throw_the_switch//:Unity","command":"build"},
             {"name":"uthash","version":"2.3.0","target":"@uthash//:uthash","command":"build"}
           ]
           JSON
           )
+
+          known_module_names=$(jq -r '.[].name' <<<"$all_modules")
 
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             base_sha="${{ github.event.pull_request.base.sha }}"
@@ -95,11 +98,66 @@ jobs:
           elif [[ "${#changed_modules[@]}" -eq 0 ]]; then
             selected_modules='[]'
           else
+            unknown_modules=()
+            for module_name in "${!changed_modules[@]}"; do
+              if ! grep -Fxq "$module_name" <<<"$known_module_names"; then
+                if [[ -f "modules/$module_name/metadata.json" ]]; then
+                  unknown_modules+=("$module_name")
+                fi
+              fi
+            done
+
+            if [[ "${#unknown_modules[@]}" -ne 0 ]]; then
+              printf 'Published modules changed but missing from workflow matrix: %s\n' "${unknown_modules[*]}" >&2
+              exit 1
+            fi
+
             changed_module_names=$(printf '%s\n' "${!changed_modules[@]}" | sort | jq -R . | jq -s .)
             selected_modules=$(jq --argjson names "$changed_module_names" '[.[] | select(.name as $name | $names | index($name))]' <<<"$all_modules")
           fi
 
           count=$(jq 'length' <<<"$selected_modules")
+
+          echo "Changed files detected:"
+          if [[ "${#changed_files[@]}" -eq 0 ]]; then
+            echo "  (none)"
+          else
+            printf '  - %s\n' "${changed_files[@]}"
+          fi
+
+          if [[ "$run_all" == true ]]; then
+            echo "Selection mode: full matrix"
+          elif [[ "$selected_modules" == '[]' ]]; then
+            echo "Selection mode: no published module changes"
+          else
+            echo "Selection mode: changed modules only"
+          fi
+
+          echo "Selected modules:"
+          if [[ "$selected_modules" == '[]' ]]; then
+            echo "  (none)"
+          else
+            jq -r '.[] | "  - \(.name)@\(.version) [\(.command) \(.target)]"' <<<"$selected_modules"
+          fi
+
+          {
+            echo "### Registry module selection"
+            echo
+            if [[ "$run_all" == true ]]; then
+              echo "- Mode: full matrix"
+            elif [[ "$selected_modules" == '[]' ]]; then
+              echo "- Mode: no published module changes"
+            else
+              echo "- Mode: changed modules only"
+            fi
+            echo "- Changed files: ${#changed_files[@]}"
+            echo "- Selected modules: $count"
+            if [[ "$selected_modules" != '[]' ]]; then
+              echo
+              jq -r '.[] | "- `\(.name)@\(.version)` → `\(.command) \(.target)`"' <<<"$selected_modules"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
           matrix=$(jq -cn \
             --argjson modules "$selected_modules" \
             '{os: ["ubuntu-latest", "macos-latest"], module: $modules}')
