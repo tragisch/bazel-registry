@@ -24,12 +24,14 @@ jobs:
           - { name: argon2,      version: "20190702",  target: "@argon2//:argon2" }
           - { name: argtable3,   version: "3.2.2",     target: "@argtable3//:argtable3" }
           - { name: box2d,       version: "3.0.0",     target: "@box2d//:box2d" }
+          - { name: graphblas,   version: "10.3.1",    target: "@graphblas//:graphblas" }
           - { name: liblinear,   version: "247",       target: "@liblinear//:liblinear" }
           - { name: libsodium,   version: "1.0.20",    target: "@libsodium//:libsodium" }
-          - { name: sha1,        version: "e1e2536fcf6a8f9703be8c85d58724b408552287", target: "@sha1//:sha1" }
-          - { name: uthash,      version: "2.3.0",     target: "@uthash//:uthash" }
           - { name: libzmq,      version: "4.3.5",     target: "@libzmq//:libzmq" }
           - { name: czmq,        version: "4.2.1",     target: "@czmq//:czmq" }
+          - { name: raylib,      version: "5.5",       target: "@raylib//:raylib" }
+          - { name: sha1,        version: "e1e2536fcf6a8f9703be8c85d58724b408552287", target: "@sha1//:sha1" }
+          - { name: uthash,      version: "2.3.0",     target: "@uthash//:uthash" }
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -39,12 +41,15 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential
+          sudo apt-get install -y \
+            build-essential \
+            libx11-dev libxrandr-dev libxinerama-dev \
+            libxcursor-dev libxi-dev libgl-dev
 
       - name: Create test workspace
         run: |
           mkdir -p /tmp/build-test
-          printf 'module(name="build_test")\nbazel_dep(name="rules_cc",version="0.2.17")\nbazel_dep(name="%s",version="%s")\n' \
+          printf 'module(name="build_test")\nbazel_dep(name="rules_cc",version="0.2.17")\nbazel_dep(name="bazel_skylib",version="1.7.1")\nbazel_dep(name="platforms",version="1.0.0")\nbazel_dep(name="%s",version="%s")\n' \
             "${{ matrix.module.name }}" "${{ matrix.module.version }}" \
             > /tmp/build-test/MODULE.bazel
           touch /tmp/build-test/BUILD.bazel
