@@ -1,0 +1,153 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+licenses(["notice"])  # zlib License
+
+# ---------------------------------------------------------------------------
+# Platform conditions
+# ---------------------------------------------------------------------------
+
+config_setting(
+    name = "macos",
+    constraint_values = ["@platforms//os:macos"],
+)
+
+config_setting(
+    name = "linux",
+    constraint_values = ["@platforms//os:linux"],
+)
+
+SRC_DIR = "src"
+
+EXTERNAL_DIR = "external"
+
+GLFW_DIR = SRC_DIR + "/" + EXTERNAL_DIR + "/glfw"
+
+# ---------------------------------------------------------------------------
+# All GLFW files that rglfw.c #includes directly (unity-build pattern).
+# Must be listed as hdrs so Bazel's sandbox makes them available.
+# ---------------------------------------------------------------------------
+
+# buildifier: disable=external-path
+GLFW_UNITY_HDRS = glob([
+    GLFW_DIR + "/include/GLFW/*.h",
+    GLFW_DIR + "/src/*.h",
+    GLFW_DIR + "/src/*.c",  # included as headers by rglfw.c
+    GLFW_DIR + "/src/*.m",  # ObjC Cocoa files, included by rglfw.c on macOS
+])
+
+# buildifier: disable=external-path
+GLFW_INCLUDES = [
+    SRC_DIR,
+    GLFW_DIR + "/include",
+    GLFW_DIR + "/src",
+]
+
+# ---------------------------------------------------------------------------
+# GLFW – macOS Cocoa backend
+#
+# rglfw.c includes Cocoa .m files which contain Objective-C syntax.
+# Clang's "-x objective-c" forces compilation as ObjC, allowing .m includes
+# from within a .c unity-build file.  Using cc_library avoids rules_apple.
+# ---------------------------------------------------------------------------
+
+cc_library(
+    name = "glfw_macos",
+    srcs = ["src/rglfw.c"],
+    hdrs = GLFW_UNITY_HDRS,
+    copts = [
+        "-x",
+        "objective-c",
+    ],
+    includes = GLFW_INCLUDES,
+    linkopts = [
+        "-framework Cocoa",
+        "-framework IOKit",
+        "-framework CoreFoundation",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+# ---------------------------------------------------------------------------
+# GLFW – Linux X11 backend
+# ---------------------------------------------------------------------------
+
+cc_library(
+    name = "glfw_linux",
+    srcs = ["src/rglfw.c"],
+    hdrs = GLFW_UNITY_HDRS,
+    includes = GLFW_INCLUDES,
+    visibility = ["//visibility:private"],
+)
+
+# ---------------------------------------------------------------------------
+# raylib – main public library
+#
+# Core sources are portable C.  PLATFORM_DESKTOP_GLFW causes rcore.c to
+# #include platforms/rcore_desktop_glfw.c at compile time.
+# All stb_*, miniaudio, glad etc. are header-only/bundled via `includes`.
+# ---------------------------------------------------------------------------
+
+cc_library(
+    name = "raylib",
+    srcs = [
+        "src/raudio.c",
+        "src/rcore.c",
+        "src/rmodels.c",
+        "src/rshapes.c",
+        "src/rtext.c",
+        "src/rtextures.c",
+        "src/utils.c",
+    ],
+    hdrs = [
+        "src/config.h",
+        "src/raylib.h",
+        "src/raymath.h",
+        "src/rcamera.h",
+        "src/rgestures.h",
+        "src/rlgl.h",
+        "src/utils.h",
+    ] + glob([
+        # buildifier: disable=external-path
+        SRC_DIR + "/" + EXTERNAL_DIR + "/*.h",
+        # buildifier: disable=external-path
+        SRC_DIR + "/" + EXTERNAL_DIR + "/*.c",
+        "src/platforms/*.c",
+    ]),
+    copts = [
+        "-DPLATFORM_DESKTOP_GLFW",
+        "-std=c99",
+        "-Wno-unused-result",
+    ],
+    includes = [
+        SRC_DIR,
+        # buildifier: disable=external-path
+        GLFW_DIR + "/include",
+    ],
+    linkopts = select({
+        ":linux": [
+            "-lGL",
+            "-lX11",
+            "-lXrandr",
+            "-lXinerama",
+            "-lXi",
+            "-lXcursor",
+            "-lm",
+            "-ldl",
+            "-lpthread",
+        ],
+        ":macos": [
+            "-framework OpenGL",
+            "-framework Cocoa",
+            "-framework IOKit",
+            "-framework CoreFoundation",
+            "-framework AudioToolbox",
+            "-framework CoreVideo",
+            "-framework CoreServices",
+        ],
+    }),
+    visibility = ["//visibility:public"],
+    deps = select({
+        ":linux": [":glfw_linux"],
+        ":macos": [":glfw_macos"],
+    }),
+)

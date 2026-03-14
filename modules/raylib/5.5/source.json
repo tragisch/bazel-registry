@@ -1,0 +1,10 @@
+{
+    "name": "raylib",
+    "url": "https://github.com/raysan5/raylib/archive/refs/tags/5.5.tar.gz",
+    "integrity": "sha256-rqmOz1vFxeC3iadt4Ag6IacEVwUOpMwq7HVmk19eJY4=",
+    "strip_prefix": "raylib-5.5",
+    "license": "zlib License",
+    "overlay": {
+        "BUILD.bazel": "sha256-vjv9w2pNz0ItF61UqJ9m6FYNOV4b1NGC4ecGnqhbd9U="
+    }
+}
