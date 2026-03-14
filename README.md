@@ -31,3 +31,5 @@ common --registry=https://bcr.bazel.build
 | [sha1](https://github.com/clibs/sha1)                         | e1e2536  | NIST Secure Hash Algorithm (SHA-1) implementation                           |
 | [throw_the_switch](https://github.com/ThrowTheSwitch/Unity)   | 2.5.2    | Unity – simple unit testing framework for C                                 |
 | [uthash](https://github.com/troydhanson/uthash)               | 2.3.0    | C macros for hash tables and more                                           |
+
+![Test Registry](https://github.com/tragisch/bazel-registry/actions/workflows/test-registry.yml/badge.svg)
