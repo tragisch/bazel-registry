@@ -1,0 +1,7 @@
+{
+    "homepage": "https://github.com/recp/cglm",
+    "description": "Highly optimized 2D / 3D graphics math library for C",
+    "versions": [
+        "0.9.6"
+    ]
+}

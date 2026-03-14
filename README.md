@@ -23,6 +23,7 @@ common --registry=https://bcr.bazel.build
 | [argon2](https://github.com/P-H-C/phc-winner-argon2/)         | 20190702 | Argon2 password hashing                                                     | `@argon2//:argon2`          | ✅     |
 | [argtable3](https://github.com/argtable/argtable3)            | 3.2.2    | ANSI C library for parsing GNU-style command line options                   | `@argtable3//:argtable3`    | ✅     |
 | [box2d](https://github.com/erincatto/box2d)                   | 3.0.0    | 2D physics engine for games                                                 | `@box2d//:box2d`            | ✅     |
+| [cglm](https://github.com/recp/cglm)                          | 0.9.6    | Highly optimized 2D / 3D graphics math library for C                        | `@cglm//:cglm`              | ✅     |
 | [czmq](https://github.com/zeromq/czmq)                        | 4.2.1    | High-level C binding for ZeroMQ                                             | `@czmq//:czmq`              | ✅     |
 | [graphblas](https://github.com/DrTimothyAldenDavis/GraphBLAS) | 10.3.1   | SuiteSparse:GraphBLAS – a complete implementation of the GraphBLAS standard | `@graphblas//:graphblas`    | ✅     |
 | [liblinear](https://github.com/cjlin1/liblinear)              | 247      | A library for large linear classification                                   | `@liblinear//:liblinear`    | ✅     |
@@ -35,5 +36,7 @@ common --registry=https://bcr.bazel.build
 | [uthash](https://github.com/troydhanson/uthash)               | 2.3.0    | C macros for hash tables and more                                           | `@uthash//:uthash`          | ✅     |
 
 > **Note:** `openmp` exposes the static runtime target `@openmp//:libomp` (alias for `libomp_runtime_static`) and is validated in CI via `@openmp//:omp_smoke_test`.
+
+> **Note:** `cglm` exposes `@cglm//:cglm` (header-only) and `@cglm//:cglmc` (compiled `glmc_*` API).
 
 ![Test Registry](https://github.com/tragisch/bazel-registry/actions/workflows/test-registry.yml/badge.svg)

@@ -1,0 +1,29 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+licenses(["notice"])  # MIT
+
+# cglm is primarily a header-only library. Keep the default public target
+# lightweight and reproducible; the compiler selects the best SIMD path based on
+# the target platform instead of host-specific flags like -march=native.
+cc_library(
+    name = "cglm",
+    hdrs = glob(["include/cglm/**/*.h"]),
+    include_prefix = "",
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+)
+
+# Linked API for glmc_* symbols.
+cc_library(
+    name = "cglmc",
+    srcs = glob(
+        ["src/**/*.c"],
+        exclude = ["src/swift/*.c"],
+    ),
+    hdrs = glob(["include/cglm/**/*.h"]),
+    copts = ["-std=c11"],
+    include_prefix = "",
+    linkopts = ["-lm"],
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+)

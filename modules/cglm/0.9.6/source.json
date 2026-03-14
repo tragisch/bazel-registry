@@ -1,0 +1,10 @@
+{
+    "name": "cglm",
+    "url": "https://github.com/recp/cglm/archive/refs/tags/v0.9.6.tar.gz",
+    "integrity": "sha256-vl59OEVh6w/KWXJKkrf7RL8D5Yin6uUSOn15YAKSgYQ=",
+    "strip_prefix": "cglm-0.9.6",
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-vXqUhLKKHE3Pv38m0YwgStXplocwxmjA0XF+mn9DOPU="
+    }
+}
