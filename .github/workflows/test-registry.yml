@@ -119,6 +119,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Bazelisk
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="v1.27.0"
+          os_name=$(uname -s)
+          arch_name=$(uname -m)
+
+          case "$os_name" in
+            Linux) platform="linux" ;;
+            Darwin) platform="darwin" ;;
+            *) echo "Unsupported OS: $os_name" >&2; exit 1 ;;
+          esac
+
+          case "$arch_name" in
+            x86_64|amd64) asset_arch="amd64" ;;
+            arm64|aarch64) asset_arch="arm64" ;;
+            *) echo "Unsupported architecture: $arch_name" >&2; exit 1 ;;
+          esac
+
+          asset="bazelisk-${platform}-${asset_arch}"
+          url="https://github.com/bazelbuild/bazelisk/releases/download/${version}/${asset}"
+
+          curl -L --fail "$url" -o bazelisk
+          chmod +x bazelisk
+          sudo mv bazelisk /usr/local/bin/bazelisk
+          sudo ln -sf /usr/local/bin/bazelisk /usr/local/bin/bazel
+          bazelisk version
+
       - name: Install system dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
@@ -140,7 +169,7 @@ jobs:
       - name: ${{ matrix.module.command == 'test' && 'Test' || 'Build' }} ${{ matrix.module.name }}@${{ matrix.module.version }}
         working-directory: /tmp/build-test
         run: |
-          bazel ${{ matrix.module.command }} \
+          bazelisk ${{ matrix.module.command }} \
             --registry=file://${{ github.workspace }} \
             --registry=https://bcr.bazel.build \
             ${{ matrix.module.target }}

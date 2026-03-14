@@ -10,9 +10,8 @@
         "macos"
     ],
     "overlay": {
-        "BUILD.bazel": "sha256-pAZbP1FcMY+pP8Gx3gtCu6k+TAj0Tuwu3K3W+0dO2dQ=",
+        "BUILD.bazel": "sha256-pFVpXx2ROXWzAbYgzub2PpAd/LxbILVxJ6nbsaC3bNY=",
         "libomp_sources.bzl": "sha256-27YkOFqRuUUu7CWyjoEUi8xj+leMkHO2PVKUtKiYPU8=",
-        "tools/render_openmp_template.py": "sha256-FfMeFq0WBCV7dgJ5labGN0atO2Lw7XL2+TcYP4cXksY=",
-        "runtime/test/omp_smoke.c": "sha256-tj8TeFc5l8EMCBypI7JsDzq1HJ+KUUAa3ZADKTNApWA="
+        "tools/render_openmp_template.py": "sha256-FfMeFq0WBCV7dgJ5labGN0atO2Lw7XL2+TcYP4cXksY="
     }
 }

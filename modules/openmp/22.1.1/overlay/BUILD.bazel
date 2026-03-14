@@ -118,6 +118,32 @@ genrule(
     tools = [":message_converter"],
 )
 
+genrule(
+        name = "omp_smoke_src",
+        outs = ["generated/omp_smoke.c"],
+        cmd = """
+cat >"$@" <<'EOF'
+#include <omp.h>
+
+#include <stdio.h>
+
+int main(void) {
+    int NumThreads = 0;
+
+#pragma omp parallel num_threads(2) reduction(+ : NumThreads)
+    { NumThreads += 1; }
+
+    if (NumThreads < 2) {
+        fprintf(stderr, "expected at least 2 threads, got %d\\n", NumThreads);
+        return 1;
+    }
+
+    return 0;
+}
+EOF
+""",
+)
+
 cc_library(
     name = "libomp_headers",
     hdrs = [
@@ -179,7 +205,7 @@ alias(
 
 cc_test(
     name = "omp_smoke_test",
-    srcs = ["runtime/test/omp_smoke.c"],
+    srcs = [":omp_smoke_src"],
     copts = select({
         ":linux_x86_64": ["-fopenmp"],
         ":macos_arm64": [
