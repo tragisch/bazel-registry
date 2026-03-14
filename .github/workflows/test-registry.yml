@@ -49,7 +49,7 @@ jobs:
       - name: Create test workspace
         run: |
           mkdir -p /tmp/build-test
-          printf 'module(name="build_test")\nbazel_dep(name="rules_cc",version="0.2.17")\nbazel_dep(name="bazel_skylib",version="1.7.1")\nbazel_dep(name="platforms",version="1.0.0")\nbazel_dep(name="%s",version="%s")\n' \
+          printf 'module(name="build_test")\nbazel_dep(name="rules_cc",version="0.2.17")\nbazel_dep(name="bazel_skylib",version="1.8.2")\nbazel_dep(name="platforms",version="1.0.0")\nbazel_dep(name="%s",version="%s")\n' \
             "${{ matrix.module.name }}" "${{ matrix.module.version }}" \
             > /tmp/build-test/MODULE.bazel
           touch /tmp/build-test/BUILD.bazel

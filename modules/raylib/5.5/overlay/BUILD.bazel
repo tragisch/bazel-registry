@@ -75,6 +75,7 @@ cc_library(
     name = "glfw_linux",
     srcs = ["src/rglfw.c"],
     hdrs = GLFW_UNITY_HDRS,
+    copts = ["-D_GLFW_X11"],
     includes = GLFW_INCLUDES,
     visibility = ["//visibility:private"],
 )
