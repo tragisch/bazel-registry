@@ -6,9 +6,6 @@ cc_library(
         "linear.cpp",
         "newton.cpp",
         "newton.h",
-        "predict.c",
-        "svm-scale.c",
-        "train.c",
     ],
     hdrs = [
         "linear.h",
