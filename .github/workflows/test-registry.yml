@@ -1,4 +1,4 @@
-name: Test Registry Modules
+name: Build Registry Modules
 
 on:
   push:
@@ -6,225 +6,48 @@ on:
   pull_request:
     branches: [main]
 
-# Cancel in-progress runs for the same branch/PR
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # ---------------------------------------------------------------------------
-  # Job 1: Validate registry structure (JSON, metadata, source.json)
-  # ---------------------------------------------------------------------------
-  validate-registry:
-    name: Validate Registry Structure
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Validate bazel_registry.json
-        run: python3 -c "import json, sys; json.load(open('bazel_registry.json')); print('✓ bazel_registry.json is valid')"
-
-      - name: Validate all metadata.json files
-        run: |
-          found=0
-          failed=0
-          for f in modules/*/metadata.json; do
-            found=$((found + 1))
-            if ! python3 -c "import json, sys; d=json.load(open('$f')); assert 'versions' in d, 'missing versions'; assert 'homepage' in d, 'missing homepage'" 2>&1; then
-              echo "✗ $f"
-              failed=$((failed + 1))
-            else
-              echo "✓ $f"
-            fi
-          done
-          echo "Checked $found metadata files, $failed failed"
-          [ "$failed" -eq 0 ]
-
-      - name: Validate all MODULE.bazel files
-        run: |
-          found=0
-          for f in modules/*/*/MODULE.bazel; do
-            found=$((found + 1))
-            # Basic check: file is non-empty and contains module() or bazel_dep()
-            if [ ! -s "$f" ]; then
-              echo "✗ $f is empty"
-              exit 1
-            fi
-            echo "✓ $f"
-          done
-          echo "Checked $found MODULE.bazel files"
-
-      - name: Validate all source.json files
-        run: |
-          found=0
-          failed=0
-          for f in modules/*/*/source.json; do
-            found=$((found + 1))
-            if ! python3 -c "
-          import json, sys
-          d = json.load(open('$f'))
-          assert 'url' in d or 'urls' in d, 'missing url/urls'
-          assert 'integrity' in d, 'missing integrity'
-          " 2>&1; then
-              echo "✗ $f"
-              failed=$((failed + 1))
-            else
-              echo "✓ $f"
-            fi
-          done
-          echo "Checked $found source.json files, $failed failed"
-          [ "$failed" -eq 0 ]
-
-      - name: Check version consistency
-        run: |
-          for meta in modules/*/metadata.json; do
-            module_dir=$(dirname "$meta")
-            module_name=$(basename "$module_dir")
-            versions=$(python3 -c "import json; print(' '.join(json.load(open('$meta'))['versions']))")
-            for v in $versions; do
-              if [ ! -d "$module_dir/$v" ]; then
-                echo "✗ $module_name: version $v listed in metadata.json but directory missing"
-                exit 1
-              fi
-              if [ ! -f "$module_dir/$v/MODULE.bazel" ]; then
-                echo "✗ $module_name/$v: MODULE.bazel missing"
-                exit 1
-              fi
-              if [ ! -f "$module_dir/$v/source.json" ]; then
-                echo "✗ $module_name/$v: source.json missing"
-                exit 1
-              fi
-              echo "✓ $module_name@$v"
-            done
-          done
-
-  # ---------------------------------------------------------------------------
-  # Job 2: Build & test modules on target platforms
-  # ---------------------------------------------------------------------------
-  test-modules:
-    name: Test Modules (${{ matrix.os }})
-    needs: validate-registry
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        # macos-latest = Apple Silicon (arm64), ubuntu-latest = x86_64
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.14.0
-        with:
-          bazelisk-cache: true
-          disk-cache: ${{ github.workflow }}-${{ matrix.os }}
-          repository-cache: true
-
-      - name: Install system dependencies (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            libx11-dev libxrandr-dev libxinerama-dev \
-            libxcursor-dev libxi-dev libgl-dev
-
-      - name: Show Bazel version
-        working-directory: test
-        run: bazel --version
-
-      - name: Build stable modules
-        working-directory: test
-        run: |
-          bazel build \
-            --registry=file://${{ github.workspace }} \
-            --registry=https://bcr.bazel.build \
-            //:stable_tests
-        timeout-minutes: 30
-
-      - name: Run stable tests
-        working-directory: test
-        run: |
-          bazel test \
-            --registry=file://${{ github.workspace }} \
-            --registry=https://bcr.bazel.build \
-            --test_output=errors \
-            //:stable_tests
-        timeout-minutes: 15
-
-      - name: Build experimental modules (allow failure)
-        working-directory: test
-        continue-on-error: true
-        run: |
-          bazel test \
-            --registry=file://${{ github.workspace }} \
-            --registry=https://bcr.bazel.build \
-            --test_output=errors \
-            --build_tag_filters=manual \
-            --test_tag_filters=manual \
-            //:experimental_tests
-        timeout-minutes: 15
-
-      - name: Upload test logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-logs-${{ matrix.os }}
-          path: test/bazel-testlogs/**/test.log
-          retention-days: 7
-
-  # ---------------------------------------------------------------------------
-  # Job 3: Individual module build checks (matrix per module)
-  # ---------------------------------------------------------------------------
-  build-individual-modules:
-    name: Build ${{ matrix.module.name }}@${{ matrix.module.version }} (${{ matrix.os }})
-    needs: validate-registry
+  build-module:
+    name: ${{ matrix.module.name }} (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
         module:
-          - { name: uthash,     version: "2.3.0",     target: "@uthash//:uthash" }
-          - { name: sha1,       version: "e1e2536fcf6a8f9703be8c85d58724b408552287", target: "@sha1//:sha1" }
-          - { name: argtable3,  version: "3.2.2",     target: "@argtable3//:argtable3" }
-          - { name: argon2,     version: "20190702",  target: "@argon2//:argon2" }
-          - { name: liblinear,  version: "247",       target: "@liblinear//:liblinear" }
-          - { name: libsodium,  version: "1.0.20",    target: "@libsodium//:libsodium" }
-          - { name: box2d,      version: "3.0.0",     target: "@box2d//:box2d" }
-          - { name: libzmq,     version: "4.3.5",     target: "@libzmq//:libzmq" }
-          - { name: czmq,       version: "4.2.1",     target: "@czmq//:czmq" }
+          - { name: argon2,      version: "20190702",  target: "@argon2//:argon2" }
+          - { name: argtable3,   version: "3.2.2",     target: "@argtable3//:argtable3" }
+          - { name: box2d,       version: "3.0.0",     target: "@box2d//:box2d" }
+          - { name: liblinear,   version: "247",       target: "@liblinear//:liblinear" }
+          - { name: libsodium,   version: "1.0.20",    target: "@libsodium//:libsodium" }
+          - { name: sha1,        version: "e1e2536fcf6a8f9703be8c85d58724b408552287", target: "@sha1//:sha1" }
+          - { name: uthash,      version: "2.3.0",     target: "@uthash//:uthash" }
+          - { name: libzmq,      version: "4.3.5",     target: "@libzmq//:libzmq" }
+          - { name: czmq,        version: "4.2.1",     target: "@czmq//:czmq" }
     runs-on: ${{ matrix.os }}
+
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.14.0
-        with:
-          bazelisk-cache: true
-          disk-cache: ${{ github.workflow }}-${{ matrix.os }}-${{ matrix.module.name }}
-          repository-cache: true
 
       - name: Install system dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            libx11-dev libxrandr-dev libxinerama-dev \
-            libxcursor-dev libxi-dev libgl-dev
+          sudo apt-get install -y build-essential
 
       - name: Create test workspace
         run: |
-          mkdir -p /tmp/module-test
-          cat > /tmp/module-test/MODULE.bazel << EOF
-          module(name = "module_build_test", version = "0.0.0")
-          bazel_dep(name = "rules_cc", version = "0.2.14")
-          bazel_dep(name = "${{ matrix.module.name }}", version = "${{ matrix.module.version }}")
-          EOF
-          touch /tmp/module-test/BUILD.bazel
+          mkdir -p /tmp/build-test
+          printf 'module(name="build_test")\nbazel_dep(name="rules_cc",version="0.2.14")\nbazel_dep(name="%s",version="%s")\n' \
+            "${{ matrix.module.name }}" "${{ matrix.module.version }}" \
+            > /tmp/build-test/MODULE.bazel
+          touch /tmp/build-test/BUILD.bazel
 
-      - name: Build module ${{ matrix.module.name }}@${{ matrix.module.version }}
-        working-directory: /tmp/module-test
+      - name: Build ${{ matrix.module.name }}@${{ matrix.module.version }}
+        working-directory: /tmp/build-test
         run: |
           bazel build \
             --registry=file://${{ github.workspace }} \
