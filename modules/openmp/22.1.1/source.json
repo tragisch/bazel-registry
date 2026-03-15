@@ -10,7 +10,7 @@
         "macos"
     ],
     "overlay": {
-        "BUILD.bazel": "sha256-pFVpXx2ROXWzAbYgzub2PpAd/LxbILVxJ6nbsaC3bNY=",
+        "BUILD.bazel": "sha256-xbtLHqa2YV9CUHa68fCwT4aT9C0CSRHlxbZQ08OMVVg=",
         "libomp_sources.bzl": "sha256-27YkOFqRuUUu7CWyjoEUi8xj+leMkHO2PVKUtKiYPU8=",
         "tools/render_openmp_template.py": "sha256-FfMeFq0WBCV7dgJ5labGN0atO2Lw7XL2+TcYP4cXksY="
     }

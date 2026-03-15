@@ -119,9 +119,9 @@ genrule(
 )
 
 genrule(
-        name = "omp_smoke_src",
-        outs = ["generated/omp_smoke.c"],
-        cmd = """
+    name = "omp_smoke_src",
+    outs = ["generated/omp_smoke.c"],
+    cmd = """
 cat >"$@" <<'EOF'
 #include <omp.h>
 
@@ -180,6 +180,11 @@ cc_library(
         "-fno-exceptions",
         "-fno-rtti",
         "-std=c++17",
+        # Upstream llvm-project/openmp `runtime/src/z_Linux_util.cpp`
+        # contains a line-spliced `#endif // ... \\` comment that
+        # triggers Clang's `-Wcomment`. Keep the suppression local to the
+        # external OpenMP runtime so project code retains full warnings.
+        "-Wno-comment",
     ] + select({
         ":linux_x86_64": ["-DLIBOMP_HAVE_PTHREAD_SETNAME_NP"],
         ":macos_arm64": ["-DLIBOMP_HAVE_PTHREAD_SETNAME_NP"],
