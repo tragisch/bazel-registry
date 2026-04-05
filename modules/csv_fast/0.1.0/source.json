@@ -9,7 +9,7 @@
         "linux"
     ],
     "overlay": {
-        "BUILD": "sha256-hF/jQS0nzmjsny92z1MYXfI5CQn5hR0P7ZwwYSFFiSs="
+        "BUILD": "sha256-yP+eTFdbKkO0EA2jb1197yLHWoDqJUTtu+03iv5Nrro="
     },
     "patches": {
         "macos_clang_builtin_headers.patch": "sha256-ysAxLhk6ElXPbOjyant8eOzV/oNn6uSbGLcT8i0gvqY="
