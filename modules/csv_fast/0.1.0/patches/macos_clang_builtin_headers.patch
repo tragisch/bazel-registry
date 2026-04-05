@@ -1,12 +1,16 @@
 diff --git a/apps/csv_fast/csv.c b/apps/csv_fast/csv.c
 --- a/apps/csv_fast/csv.c
 +++ b/apps/csv_fast/csv.c
-@@ -22,17 +22,11 @@
+@@ -22,17 +22,15 @@
  #define CSV_FAST_PLATFORM_POSIX
  #endif
  
 -#include <stddef.h>
 -#include <stdint.h>
++#if !defined(__APPLE__)
++#include <stddef.h>
++#include <stdint.h>
++#endif
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>

@@ -12,7 +12,7 @@
         "BUILD": "sha256-yP+eTFdbKkO0EA2jb1197yLHWoDqJUTtu+03iv5Nrro="
     },
     "patches": {
-        "macos_clang_builtin_headers.patch": "sha256-ysAxLhk6ElXPbOjyant8eOzV/oNn6uSbGLcT8i0gvqY="
+        "macos_clang_builtin_headers.patch": "sha256-uu90AydXk7qAZ5P7BtlpKJ9q7eLjkOwjn+eOfF/r8zo="
     },
     "patch_strip": 1
 }
