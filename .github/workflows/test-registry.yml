@@ -37,6 +37,7 @@ jobs:
             {"name":"argon2","version":"20190702","target":"@argon2//:argon2","command":"build"},
             {"name":"argtable3","version":"3.2.2","target":"@argtable3//:argtable3","command":"build"},
             {"name":"box2d","version":"3.0.0","target":"@box2d//:box2d","command":"build"},
+            {"name":"csv_fast","version":"0.1.0","target":"@csv_fast//:csv_fast","command":"build"},
             {"name":"cglm","version":"0.9.6","target":"@cglm//:cglmc","command":"build"},
             {"name":"graphblas","version":"10.3.1","target":"@graphblas//:graphblas","command":"build"},
             {"name":"liblinear","version":"247","target":"@liblinear//:liblinear","command":"build"},
