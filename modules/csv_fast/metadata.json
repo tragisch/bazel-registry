@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/tragisch/csv_fast",
+    "description": "Fast CSV parser and writer library in C",
+    "repository": [
+        "github:tragisch/csv_fast"
+    ],
+    "versions": [
+        "0.1.0"
+    ],
+    "yanked_versions": {}
+}

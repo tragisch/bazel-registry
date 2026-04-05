@@ -1,0 +1,42 @@
+diff --git a/apps/csv_fast/csv.c b/apps/csv_fast/csv.c
+--- a/apps/csv_fast/csv.c
++++ b/apps/csv_fast/csv.c
+@@ -22,17 +22,11 @@
+ #define CSV_FAST_PLATFORM_POSIX
+ #endif
+ 
+-#include <stddef.h>
+-#include <stdint.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-#if defined(__aarch64__)
+-#include <arm_neon.h>
+-#define CSV_SIMD_SEARCH
+-#define CSV_SIMD_WIDTH 16U
+-#elif defined(__amd64__) || defined(_M_AMD64)
++#if defined(__amd64__) || defined(_M_AMD64)
+ #include <emmintrin.h>
+ #define CSV_SIMD_SEARCH
+ #define CSV_SIMD_WIDTH 16U
+@@ -115,7 +109,7 @@
+     char delim;
+     char quote;
+     char escape;
+-    uint8_t charClass[256];
++    unsigned char charClass[256];
+ };
+ 
+ static void CsvInitCharClass(CsvReader *handle)
+diff --git a/apps/csv_fast/csv.h b/apps/csv_fast/csv.h
+--- a/apps/csv_fast/csv.h
++++ b/apps/csv_fast/csv.h
+@@ -13,7 +13,6 @@
+  * work. See the LICENSE file in the project root for license details.
+  */
+ 
+-#include <stddef.h>
+ #include <stdio.h>
+ 
+ /* simple and fast CSV reader:
