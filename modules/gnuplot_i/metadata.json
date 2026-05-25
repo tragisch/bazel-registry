@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/longradix/gnuplot_i",
+    "description": "gnuplot C interface library",
+    "repository": [
+        "github:longradix/gnuplot_i"
+    ],
+    "versions": [
+        "1.0"
+    ],
+    "yanked_versions": {}
+}

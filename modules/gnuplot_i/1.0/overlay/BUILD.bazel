@@ -1,0 +1,20 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_license//rules:license.bzl", "license")
+
+package(
+    default_applicable_licenses = [":license"],
+)
+
+license(
+    name = "license",
+    package_name = "gnuplot_i",
+    license_kinds = ["@rules_license//licenses/spdx:GPL-3.0-only"],
+    license_text = "LICENSE",
+)
+
+cc_library(
+    name = "gnuplot_i",
+    srcs = ["gnuplot_i.c"],
+    hdrs = ["gnuplot_i.h"],
+    visibility = ["//visibility:public"],
+)
