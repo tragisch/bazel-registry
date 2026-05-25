@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/datenwolf/linmath.h",
+    "description": "Small linear math library for computer graphics",
+    "repository": [
+        "github:datenwolf/linmath.h"
+    ],
+    "versions": [
+        "3eef82841046507e16a0f6194a61cee2eadd34b3"
+    ],
+    "yanked_versions": {}
+}

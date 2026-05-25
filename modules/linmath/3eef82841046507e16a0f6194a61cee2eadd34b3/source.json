@@ -1,0 +1,10 @@
+{
+    "name": "linmath",
+    "url": "https://github.com/datenwolf/linmath.h/archive/3eef82841046507e16a0f6194a61cee2eadd34b3.tar.gz",
+    "integrity": "sha256-eGw/nF5BXMFgfTdyQnWeynNuoQAtz2MSp/auCLw9boc=",
+    "strip_prefix": "linmath.h-3eef82841046507e16a0f6194a61cee2eadd34b3",
+    "license": "WTFPL",
+    "overlay": {
+        "BUILD.bazel": "sha256-BOIryAbOvc19Q54U9NPHl/PT+T4DBhdcQ16cOJZnOAQ="
+    }
+}
