@@ -2,7 +2,6 @@
     "homepage": "https://graphviz.org/",
     "description": "Graphviz graph visualization tools (Bazel overlay currently exposes cgraph)",
     "versions": [
-        "0.0.1",
         "15.0.0"
     ]
 }

@@ -50,6 +50,11 @@ cc_library(
 )
 
 alias(
+    name = "graphviz",
+    actual = ":cgraph",
+)
+
+alias(
     name = "cgraph",
     actual = "//lib/cgraph:cgraph",
 )
