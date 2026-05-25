@@ -74,6 +74,7 @@ cc_library(
         "@bazel_tools//src/conditions:windows": ["YY_NO_UNISTD_H"],
         "//conditions:default": [],
     }),
+    linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [
         "//:graphviz_config",
