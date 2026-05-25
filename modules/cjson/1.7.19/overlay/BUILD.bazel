@@ -1,0 +1,85 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_license//rules:license.bzl", "license")
+
+# cJSON - Ultralightweight JSON parser in ANSI C
+# https://github.com/DaveGamble/cJSON
+
+package(
+    default_applicable_licenses = [":license"],
+)
+
+license(
+    name = "license",
+    package_name = "cjson",
+    license_kinds = ["@rules_license//licenses/spdx:MIT"],
+    license_text = "LICENSE",
+)
+
+cc_library(
+    name = "cjson",
+    srcs = ["cJSON.c"],
+    hdrs = ["cJSON.h"],
+    copts = [
+        "-std=c89",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wstrict-prototypes",
+        "-Wwrite-strings",
+        "-Wshadow",
+        "-Winit-self",
+        "-Wcast-align",
+        "-Wformat=2",
+        "-Wmissing-prototypes",
+        "-Wstrict-overflow=2",
+        "-Wcast-qual",
+        "-Wundef",
+        "-Wswitch-default",
+        "-Wconversion",
+        "-Wc++-compat",
+        # Disable some warnings for better compatibility
+        "-Wno-unused-function",
+        "-Wno-unused-parameter",
+        "-Wno-sign-conversion",
+        "-Wno-conversion",
+    ],
+    linkopts = select({
+        "@platforms//os:windows": [],
+        "//conditions:default": [],
+    }),
+    local_defines = [
+        "CJSON_EXPORT_SYMBOLS",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# cJSON_Utils - Additional utilities for cJSON
+cc_library(
+    name = "cjson_utils",
+    srcs = ["cJSON_Utils.c"],
+    hdrs = ["cJSON_Utils.h"],
+    copts = [
+        "-std=c89",
+        "-Wall",
+        "-Wextra",
+        "-Wno-unused-function",
+        "-Wno-unused-parameter",
+        "-Wno-sign-conversion",
+        "-Wno-conversion",
+    ],
+    local_defines = [
+        "CJSON_EXPORT_SYMBOLS",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [":cjson"],
+)
+
+# Combined library for convenience (both cJSON and cJSON_Utils)
+cc_library(
+    name = "cjson_full",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":cjson",
+        ":cjson_utils",
+    ],
+)

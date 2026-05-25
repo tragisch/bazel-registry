@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/DaveGamble/cJSON",
+    "description": "Ultralightweight JSON parser in ANSI C",
+    "repository": [
+        "github:DaveGamble/cJSON"
+    ],
+    "versions": [
+        "1.7.19"
+    ],
+    "yanked_versions": {}
+}

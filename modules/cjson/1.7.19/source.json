@@ -1,0 +1,10 @@
+{
+    "name": "cjson",
+    "url": "https://github.com/DaveGamble/cJSON/archive/refs/tags/v1.7.19.tar.gz",
+    "integrity": "sha256-f6YW4wRu36eiijLV+erP0j+SkA/h+MzZiMFmLzBFRWI=",
+    "strip_prefix": "cJSON-1.7.19",
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-hsN5kVYw+Ww4PEU5ECY3TompBP95lqaCNGq2MsFU3qs="
+    }
+}
