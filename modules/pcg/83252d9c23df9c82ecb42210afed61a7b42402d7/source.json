@@ -1,0 +1,10 @@
+{
+    "name": "pcg",
+    "url": "https://github.com/imneme/pcg-c/archive/83252d9c23df9c82ecb42210afed61a7b42402d7.tar.gz",
+    "integrity": "sha256-vGnTeO4W2UnLg9qV+QUWi/9V7jseWGpKTo7npa6Nx9M=",
+    "strip_prefix": "pcg-c-83252d9c23df9c82ecb42210afed61a7b42402d7",
+    "license": "Apache-2.0 OR MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-VQ9XD3KQLA7SI1VB6WC6NjhO8ZF3a3UHQL7jG43hhTA="
+    }
+}
