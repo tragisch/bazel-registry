@@ -9,9 +9,9 @@
         "linux"
     ],
     "overlay": {
-        "BUILD.bazel": "sha256-8waePSS1PlPaus5Eeh85oU9z2lk9ezr8xcW9pu84U1U=",
+        "BUILD.bazel": "sha256-olXd4ygpEsGuCOEUOUdJw+MgNlUftyV3C2B/0CITMrE=",
         "lib/cdt/BUILD.bazel": "sha256-1I1Nv6bHptMvYVmi9N76wnEmCf6uwpCdaY0DKtv3wu4=",
-        "lib/cgraph/BUILD.bazel": "sha256-17Friyg8WEsmgPlYFC4iPoy4pU/rgHMhjPyfNLLXeyQ=",
+        "lib/cgraph/BUILD.bazel": "sha256-oHM10zRLGipiUAgttaTAyJpXRkFyNAi54syHXa1lgaY=",
         "lib/common/BUILD.bazel": "sha256-tZXKT7pbKSKGnwoG8zrdOM5S2GuBgRHiQ0mDyBuUV7E=",
         "lib/dotgen/BUILD.bazel": "sha256-/Cc+K9bszh+rmLL6lK3Hsuz+HTUV13b+X0VZu3rJVSA=",
         "lib/fdpgen/BUILD.bazel": "sha256-noWpl8ojVlw2095mGkB+xWzHJfCzogghvqDCH7pxWQ4=",
