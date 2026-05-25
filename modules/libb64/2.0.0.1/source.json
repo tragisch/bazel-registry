@@ -1,0 +1,10 @@
+{
+    "name": "libb64",
+    "url": "https://github.com/libb64/libb64/archive/refs/tags/v2.0.0.1.tar.gz",
+    "integrity": "sha256-zo5XipU6WRvUpvFX7sMQuaTC5vEK3i/dpq5rr695i5g=",
+    "strip_prefix": "libb64-2.0.0.1",
+    "license": "LicenseRef-Public-Domain",
+    "overlay": {
+        "BUILD.bazel": "sha256-HP67GSFOtfBKr8dd0BDU0Ug8/8ydclPeDILG8iEvFj8="
+    }
+}

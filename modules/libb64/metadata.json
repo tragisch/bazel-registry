@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/libb64/libb64",
+    "description": "Base64 encode and decode library in C",
+    "repository": [
+        "github:libb64/libb64"
+    ],
+    "versions": [
+        "2.0.0.1"
+    ],
+    "yanked_versions": {}
+}
