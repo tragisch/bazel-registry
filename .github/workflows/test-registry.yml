@@ -50,6 +50,7 @@ jobs:
             {"name":"pcg","version":"83252d9c23df9c82ecb42210afed61a7b42402d7","target":"@pcg//:pcg","command":"build"},
             {"name":"openmp","version":"22.1.1","target":"@openmp//:omp_smoke_test","command":"test"},
             {"name":"raylib","version":"5.5","target":"@raylib//:raylib","command":"build"},
+            {"name":"sds","version":"2.0.0","target":"@sds//:sds","command":"build"},
             {"name":"sha1","version":"e1e2536fcf6a8f9703be8c85d58724b408552287","target":"@sha1//:sha1","command":"build"},
             {"name":"throw_the_switch","version":"2.5.2","target":"@throw_the_switch//:Unity","command":"build"},
             {"name":"utest","version":"f2fe2880253cdb090c906958e4937d24717aa39b","target":"@utest//:utest_main","command":"build"},

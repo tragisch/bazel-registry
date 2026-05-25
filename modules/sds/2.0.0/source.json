@@ -1,0 +1,10 @@
+{
+    "name": "sds",
+    "url": "https://github.com/antirez/sds/archive/refs/tags/2.0.0.tar.gz",
+    "integrity": "sha256-N5yI0xv5lXAGEwwAZxwoYSqGR9Xzj/Cct177er8I9rs=",
+    "strip_prefix": "sds-2.0.0",
+    "license": "BSD-2-Clause",
+    "overlay": {
+        "BUILD.bazel": "sha256-aoeyy87XjI3YdlIZojKCLFJuPOQbHS6Hihzec+63er8="
+    }
+}

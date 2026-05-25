@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/antirez/sds",
+    "description": "Simple Dynamic Strings library for C",
+    "repository": [
+        "github:antirez/sds"
+    ],
+    "versions": [
+        "2.0.0"
+    ],
+    "yanked_versions": {}
+}
