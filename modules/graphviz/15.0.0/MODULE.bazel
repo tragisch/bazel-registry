@@ -1,6 +1,3 @@
-"""
-graphviz module
-"""
 module(
     name = "graphviz",
     version = "15.0.0",

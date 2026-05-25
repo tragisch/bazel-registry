@@ -1,0 +1,17 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "xdot",
+    srcs = ["xdot.c"],
+    hdrs = ["xdot.h"],
+    includes = [
+        ".",
+        "..",
+    ],
+    local_defines = ["EXPORT_XDOT"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/util",
+    ],
+)

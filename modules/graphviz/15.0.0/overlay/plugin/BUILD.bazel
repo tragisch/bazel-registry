@@ -1,0 +1,28 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "gv_builtin_dot_core",
+    srcs = ["builtin_dot_core.c"],
+    hdrs = ["builtin_dot_core.h"],
+    includes = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//lib/gvc",
+        "//plugin/core:gvplugin_core",
+        "//plugin/dot_layout:gvplugin_dot_layout",
+    ],
+)
+
+cc_library(
+    name = "gv_swift_mvp",
+    srcs = ["swift_mvp.c"],
+    hdrs = ["swift_mvp.h"],
+    includes = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":gv_builtin_dot_core",
+        "//lib/cgraph",
+        "//lib/gvc",
+        "//lib/xdot",
+    ],
+)

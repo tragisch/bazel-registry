@@ -27,6 +27,8 @@ cat > "$@" <<'EOF'
 #define BROWSER "open"
 #define DEFAULT_DPI 96
 #define GVPLUGIN_CONFIG_FILE "config8"
+#define HAVE_UNISTD_H 1
+#define HAVE_SYS_MMAN_H 1
 #define PACKAGE_VERSION "bazel"
 EOF
 """,
@@ -38,6 +40,8 @@ cat > "$@" <<'EOF'
 #define BROWSER "xdg-open"
 #define DEFAULT_DPI 96
 #define GVPLUGIN_CONFIG_FILE "config8"
+#define HAVE_UNISTD_H 1
+#define HAVE_SYS_MMAN_H 1
 #define PACKAGE_VERSION "bazel"
 EOF
 """,
@@ -49,12 +53,53 @@ cc_library(
     hdrs = [":config_h"],
 )
 
-alias(
-    name = "graphviz",
-    actual = ":cgraph",
+genrule(
+    name = "builddate_h",
+    outs = ["builddate.h"],
+    cmd = """
+cat > "$@" <<'EOF'
+#pragma once
+#define BUILDDATE "bazel"
+EOF
+""",
+)
+
+cc_library(
+    name = "graphviz_builddate",
+    hdrs = [":builddate_h"],
 )
 
 alias(
     name = "cgraph",
     actual = "//lib/cgraph:cgraph",
+)
+
+alias(
+    name = "gvc",
+    actual = "//lib/gvc:gvc",
+)
+
+alias(
+    name = "gvplugin_core",
+    actual = "//plugin/core:gvplugin_core",
+)
+
+alias(
+    name = "gvplugin_dot_layout",
+    actual = "//plugin/dot_layout:gvplugin_dot_layout",
+)
+
+alias(
+    name = "gv_builtin_dot_core",
+    actual = "//plugin:gv_builtin_dot_core",
+)
+
+alias(
+    name = "xdot",
+    actual = "//lib/xdot:xdot",
+)
+
+alias(
+    name = "graphviz_swift_mvp",
+    actual = "//plugin:gv_swift_mvp",
 )

@@ -1,0 +1,27 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "pathplan",
+    srcs = [
+        "cvt.c",
+        "inpoly.c",
+        "route.c",
+        "shortest.c",
+        "shortestpth.c",
+        "solvers.c",
+        "triang.c",
+        "util.c",
+        "visibility.c",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+    ],
+    local_defines = ["PATHPLAN_EXPORTS"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/util",
+    ],
+)

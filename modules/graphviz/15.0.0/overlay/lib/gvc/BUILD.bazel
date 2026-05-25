@@ -1,0 +1,67 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "headers",
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+        "../cdt",
+        "../cgraph",
+        "../common",
+        "../pathplan",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_builddate",
+        "//:graphviz_config",
+    ],
+)
+
+cc_library(
+    name = "gvc",
+    srcs = [
+        "gvc.c",
+        "gvconfig.c",
+        "gvcontext.c",
+        "gvdevice.c",
+        "gvevent.c",
+        "gvjobs.c",
+        "gvlayout.c",
+        "gvloadimage.c",
+        "gvplugin.c",
+        "gvrender.c",
+        "gvtextlayout.c",
+        "gvtool_tred.c",
+        "gvusershape.c",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+        "../cdt",
+        "../cgraph",
+        "../common",
+        "../pathplan",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    local_defines = [
+        "GVC_EXPORTS",
+        "GVLIBDIR=\"graphviz\"",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":headers",
+        "//:graphviz_builddate",
+        "//:graphviz_config",
+        "//lib/cdt",
+        "//lib/cgraph",
+        "//lib/common",
+        "//lib/pack",
+        "//lib/pathplan",
+        "//lib/util",
+    ],
+)

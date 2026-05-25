@@ -1,0 +1,20 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "gvplugin_dot_layout",
+    srcs = [
+        "gvlayout_dot_layout.c",
+        "gvplugin_dot_layout.c",
+    ],
+    includes = [
+        ".",
+        "..",
+        "../../lib",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/dotgen",
+        "//lib/gvc",
+    ],
+)

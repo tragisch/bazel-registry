@@ -1,0 +1,26 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "label",
+    srcs = [
+        "index.c",
+        "node.c",
+        "rectangle.c",
+        "split.q.c",
+        "xlabels.c",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+        "../common",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cdt",
+        "//lib/cgraph",
+        "//lib/common:headers",
+        "//lib/gvc:headers",
+    ],
+)

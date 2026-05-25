@@ -67,7 +67,6 @@ cc_library(
         "..",
         "../cdt",
     ],
-    linkstatic = True,
     local_defines = [
         "EXPORT_CGRAPH",
         "EXPORT_CGHDR",

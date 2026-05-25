@@ -1,6 +1,6 @@
 {
     "homepage": "https://graphviz.org/",
-    "description": "Graphviz graph visualization tools (Bazel overlay currently exposes cgraph)",
+    "description": "Graphviz graph visualization tools with Bazel overlay for cgraph, gvc, dot_layout/core plugins, xdot and Swift MVP builtins",
     "versions": [
         "15.0.0"
     ]

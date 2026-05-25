@@ -1,0 +1,28 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "pack",
+    srcs = [
+        "ccomps.c",
+        "pack.c",
+    ],
+    hdrs = ["pack.h"],
+    includes = [
+        ".",
+        "..",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    local_defines = ["GVC_EXPORTS"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/common:headers",
+        "//lib/gvc:headers",
+        "//lib/pathplan",
+        "//lib/util",
+    ],
+)

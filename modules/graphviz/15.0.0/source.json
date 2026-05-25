@@ -9,9 +9,24 @@
         "linux"
     ],
     "overlay": {
-        "BUILD.bazel": "sha256-JJGpWXPPSP7qnJHA6gZQvWDKP9jNPWKsd9RGJ2BIkNQ=",
+        "BUILD.bazel": "sha256-8waePSS1PlPaus5Eeh85oU9z2lk9ezr8xcW9pu84U1U=",
         "lib/cdt/BUILD.bazel": "sha256-1I1Nv6bHptMvYVmi9N76wnEmCf6uwpCdaY0DKtv3wu4=",
-        "lib/cgraph/BUILD.bazel": "sha256-Koh+E7ApSHMbQWe8+FqWO7xiz/wLcid4Q/oH/go7ENk=",
-        "lib/util/BUILD.bazel": "sha256-aZK+6uXU8qsgcLCc7aRP2YQWEsp9XATZ/MsgB7Tz5iY="
+        "lib/cgraph/BUILD.bazel": "sha256-17Friyg8WEsmgPlYFC4iPoy4pU/rgHMhjPyfNLLXeyQ=",
+        "lib/common/BUILD.bazel": "sha256-tZXKT7pbKSKGnwoG8zrdOM5S2GuBgRHiQ0mDyBuUV7E=",
+        "lib/dotgen/BUILD.bazel": "sha256-/Cc+K9bszh+rmLL6lK3Hsuz+HTUV13b+X0VZu3rJVSA=",
+        "lib/fdpgen/BUILD.bazel": "sha256-noWpl8ojVlw2095mGkB+xWzHJfCzogghvqDCH7pxWQ4=",
+        "lib/gvc/BUILD.bazel": "sha256-aMqPHC+MB7Qo46ag9lHzz3iQkvCWhMvo9GDQ0roVhaQ=",
+        "lib/label/BUILD.bazel": "sha256-q3hlgBXaYDUXNoVWasRwKxEUwxZVuAtetYAljKRu7Fc=",
+        "lib/pack/BUILD.bazel": "sha256-40FSR0sOmCqhFbpcwTE3lXSOxwFPc/jaISxFAnzednE=",
+        "lib/pathplan/BUILD.bazel": "sha256-Q1QLhTiauCg8fY5uUJDUEXiHq32fBcOJ5nAvfYcaLaE=",
+        "lib/util/BUILD.bazel": "sha256-aZK+6uXU8qsgcLCc7aRP2YQWEsp9XATZ/MsgB7Tz5iY=",
+        "lib/xdot/BUILD.bazel": "sha256-9wmpWcdxURxxZMHIVWLi3td0HaiNRL4apT8INxfnJs0=",
+        "plugin/BUILD.bazel": "sha256-7H6dk1owjXlRRMGxFPahwdtLD22SbkA7xZuB1Kd5wMQ=",
+        "plugin/builtin_dot_core.c": "sha256-0Spe7WLWAixJ+KtLAfIyOsCsUFjIwW7wXC7LKc8JjSc=",
+        "plugin/builtin_dot_core.h": "sha256-MlXo3jfILUSYxMuHsOjKFSwkJxvdOpZjq+NP+PUu3Gg=",
+        "plugin/core/BUILD.bazel": "sha256-g7nCF+DzLco/FsjwFqP3rYuYOIQamyrHugVdSUqqPPg=",
+        "plugin/dot_layout/BUILD.bazel": "sha256-k2w6SgSTug6Rw+R2c7ZhmzuvvtlBAnDCGqoJSiW0aPM=",
+        "plugin/swift_mvp.c": "sha256-QtvLDhY9/V55PY4d2bFmFIYiXYDaw/oSCF+i/XEN4nA=",
+        "plugin/swift_mvp.h": "sha256-ACShuSHOCWN3ph44cJAqO3fWdETSFEFWZIU0mae0MzM="
     }
 }

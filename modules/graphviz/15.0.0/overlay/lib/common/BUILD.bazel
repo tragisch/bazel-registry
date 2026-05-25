@@ -1,0 +1,109 @@
+load("@bison//:bison.bzl", "bison")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+bison(
+    name = "gen_htmlparse",
+    srcs = ["htmlparse.y"],
+    outs = [
+        "htmlparse.c",
+        "htmlparse.h",
+    ],
+    args = [
+        "--defines=$(execpath htmlparse.h)",
+        "--output=$(execpath htmlparse.c)",
+        "$(execpath htmlparse.y)",
+    ],
+)
+
+genrule(
+    name = "gen_colortbl",
+    srcs = [
+        "brewer_colors",
+        "color_names",
+        "make_colortbl.py",
+        "svgcolor_names",
+    ],
+    outs = ["colortbl.h"],
+    cmd = "python3 $(location make_colortbl.py) $(location brewer_colors) $(location svgcolor_names) $(location color_names) $@",
+)
+
+genrule(
+    name = "gen_entities",
+    srcs = [
+        "entities.html",
+        "entities.py",
+    ],
+    outs = ["entities.h"],
+    cmd = "python3 $(location entities.py) $@",
+)
+
+cc_library(
+    name = "headers",
+    hdrs = glob(["*.h"]) + [
+        ":gen_colortbl",
+        ":gen_entities",
+        ":gen_htmlparse",
+    ],
+    includes = [
+        ".",
+        "..",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["//:graphviz_config"],
+)
+
+cc_library(
+    name = "common",
+    srcs = [
+        "arrows.c",
+        "colxlate.c",
+        "ellipse.c",
+        "emit.c",
+        "geom.c",
+        "globals.c",
+        "htmllex.c",
+        "htmltable.c",
+        "input.c",
+        "labels.c",
+        "ns.c",
+        "output.c",
+        "pointset.c",
+        "postproc.c",
+        "psusershape.c",
+        "routespl.c",
+        "shapes.c",
+        "splines.c",
+        "taper.c",
+        "textspan.c",
+        "textspan_lut.c",
+        "timing.c",
+        "utils.c",
+        ":gen_htmlparse",
+    ],
+    hdrs = glob(["*.h"]) + [
+        ":gen_colortbl",
+        ":gen_entities",
+        ":gen_htmlparse",
+    ],
+    includes = [
+        ".",
+        "..",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    local_defines = ["GVC_EXPORTS"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":headers",
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/fdpgen:headers",
+        "//lib/gvc:headers",
+        "//lib/label",
+        "//lib/pathplan",
+        "//lib/util",
+        "//lib/xdot",
+    ],
+)

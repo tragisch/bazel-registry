@@ -1,0 +1,37 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "gvplugin_core",
+    srcs = [
+        "gvloadimage_core.c",
+        "gvplugin_core.c",
+        "gvrender_core_dot.c",
+        "gvrender_core_fig.c",
+        "gvrender_core_json.c",
+        "gvrender_core_map.c",
+        "gvrender_core_pic.c",
+        "gvrender_core_pov.c",
+        "gvrender_core_ps.c",
+        "gvrender_core_svg.c",
+        "gvrender_core_tk.c",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+        "../../lib",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/common",
+        "//lib/gvc",
+        "//lib/util",
+        "//lib/xdot",
+    ],
+)
