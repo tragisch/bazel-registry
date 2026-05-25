@@ -1,0 +1,10 @@
+{
+    "name": "lmdb",
+    "url": "https://github.com/LMDB/lmdb/archive/refs/tags/LMDB_0.9.31.tar.gz",
+    "integrity": "sha256-3XCoxngHs7hTKz6YewpOmYli7MKGQ+GvXsd2lrCBybA=",
+    "strip_prefix": "lmdb-LMDB_0.9.31",
+    "license": "OLDAP-2.8",
+    "overlay": {
+        "BUILD.bazel": "sha256-c+x+L5l1kcz+zfqmaSXEqP4D4oO+a/F24pIA3fDHoBY="
+    }
+}

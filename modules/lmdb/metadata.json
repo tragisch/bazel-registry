@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/LMDB/lmdb",
+    "description": "Lightning memory-mapped database library",
+    "repository": [
+        "github:LMDB/lmdb"
+    ],
+    "versions": [
+        "0.9.31"
+    ],
+    "yanked_versions": {}
+}
