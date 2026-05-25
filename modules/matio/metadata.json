@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/tbeu/matio",
+    "description": "MATLAB MAT file I/O library",
+    "repository": [
+        "github:tbeu/matio"
+    ],
+    "versions": [
+        "1.5.27"
+    ],
+    "yanked_versions": {}
+}

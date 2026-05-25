@@ -1,0 +1,14 @@
+{
+    "name": "matio",
+    "url": "https://github.com/tbeu/matio/releases/download/v1.5.27/matio-1.5.27.tar.gz",
+    "integrity": "sha256-CmqgCxjEUStjqNJ5BrB5yMbtQdSyhE96SuWY4Y0i07M=",
+    "strip_prefix": "matio-1.5.27",
+    "license": "BSD-2-Clause",
+    "overlay": {
+        "BUILD.bazel": "sha256-BfImIXU6GxVfE6mwbE+nF9ogwUWi5FQ9iLzCSoThoLs=",
+        "matioConfig-Linux.h": "sha256-/0/YD6jYFCVo7uawV8gSzC0gn9R9RnkfGIYmFFiWcA0=",
+        "matioConfig.h": "sha256-//RLe2qSWu5Uk1V0u7uomkr0EMVqFE0zITJjySA8kaE=",
+        "matio_pubconf-Linux.h": "sha256-eg+/EjOutqPj5PgOmj8ZHo4EYRDSHujcXg6ckAeg9yY=",
+        "matio_pubconf.h": "sha256-Rq3s1XSDB0yqbJ68gpt7u8JEry73XERqDHohy4HokUY="
+    }
+}
