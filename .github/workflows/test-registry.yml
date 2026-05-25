@@ -40,6 +40,7 @@ jobs:
             {"name":"csv_fast","version":"0.1.0","target":"@csv_fast//:csv_fast","command":"build"},
             {"name":"cglm","version":"0.9.6","target":"@cglm//:cglmc","command":"build"},
             {"name":"graphblas","version":"10.3.1","target":"@graphblas//:graphblas","command":"build"},
+            {"name":"libcsv","version":"b1d5212831842ee5869d99bc208a21837e4037d5","target":"@libcsv//:libcsv","command":"build"},
             {"name":"liblinear","version":"247","target":"@liblinear//:liblinear","command":"build"},
             {"name":"libsodium","version":"1.0.20","target":"@libsodium//:libsodium","command":"build"},
             {"name":"linmath","version":"3eef82841046507e16a0f6194a61cee2eadd34b3","target":"@linmath//:linmath","command":"build"},

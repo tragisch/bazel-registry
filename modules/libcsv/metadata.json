@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/rgamble/libcsv",
+    "description": "CSV parser and writer library in C",
+    "repository": [
+        "github:rgamble/libcsv"
+    ],
+    "versions": [
+        "b1d5212831842ee5869d99bc208a21837e4037d5"
+    ],
+    "yanked_versions": {}
+}

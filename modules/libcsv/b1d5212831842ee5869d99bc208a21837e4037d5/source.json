@@ -1,0 +1,10 @@
+{
+    "name": "libcsv",
+    "url": "https://github.com/rgamble/libcsv/archive/b1d5212831842ee5869d99bc208a21837e4037d5.tar.gz",
+    "integrity": "sha256-MozNkY7e7upSFk98Q1ANPOLwOVlMDIGwqi5gQbzojsQ=",
+    "strip_prefix": "libcsv-b1d5212831842ee5869d99bc208a21837e4037d5",
+    "license": "LGPL",
+    "overlay": {
+        "BUILD.bazel": "sha256-X9FUSldWtSxX+EbLGYWI/OWkYbd/+mOtdz0GiOaTANo="
+    }
+}

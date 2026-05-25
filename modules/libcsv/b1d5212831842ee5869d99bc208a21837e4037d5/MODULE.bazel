@@ -1,0 +1,9 @@
+"""
+libcsv module
+"""
+module(
+    name = "libcsv",
+    version = "b1d5212831842ee5869d99bc208a21837e4037d5",
+)
+
+bazel_dep(name = "rules_cc", version = "0.2.17")
