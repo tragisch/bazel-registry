@@ -1,0 +1,11 @@
+"""
+utest module
+"""
+
+module(
+    name = "utest",
+    version = "f2fe2880253cdb090c906958e4937d24717aa39b",
+)
+
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "rules_cc", version = "0.2.14")

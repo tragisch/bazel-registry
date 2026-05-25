@@ -1,0 +1,77 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+licenses(["notice"])  # BSD-3-Clause
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "linux",
+    constraint_values = ["@platforms//os:linux"],
+)
+
+config_setting(
+    name = "macos",
+    constraint_values = ["@platforms//os:macos"],
+)
+
+cc_library(
+    name = "utest",
+    srcs = [
+        "src/utest/test.cpp",
+        "src/utest/test_assert.cpp",
+        "src/utest/test_case.cpp",
+        "src/utest/test_color.cpp",
+        "src/utest/test_command_line.cpp",
+        "src/utest/test_exception.cpp",
+        "src/utest/test_list.cpp",
+        "src/utest/test_params.cpp",
+        "src/utest/test_register.cpp",
+        "src/utest/test_reporter.cpp",
+        "src/utest/test_reporter/google_test.cpp",
+        "src/utest/test_reporter/json.cpp",
+        "src/utest/test_runner.cpp",
+        "src/utest/test_string.cpp",
+        "src/utest/test_suite.cpp",
+        "src/utest/test_value.cpp",
+        "src/utest/test_writer.cpp",
+        "src/utest/test_writer/file.cpp",
+    ] + select({
+        ":linux": [
+            "src/utest/test_thread.cpp",
+            "src/utest/test_thread/thread.cpp",
+            "src/utest/test_writer/linux/tcp.cpp",
+            "src/utest/test_writer/linux/udp.cpp",
+        ],
+        ":macos": [
+            "src/utest/test_thread.cpp",
+            "src/utest/test_thread/thread.cpp",
+            "src/utest/test_writer/linux/tcp.cpp",
+            "src/utest/test_writer/linux/udp.cpp",
+        ],
+        "//conditions:default": [
+            "src/utest/test_thread.cpp",
+            "src/utest/test_thread/generic.cpp",
+            "src/utest/test_writer/generic/tcp.cpp",
+            "src/utest/test_writer/generic/udp.cpp",
+        ],
+    }),
+    hdrs = glob(["include/**/*.hpp"]),
+    textual_hdrs = ["src/utest/test_register.hpp"],
+    copts = ["-std=c++11"],
+    include_prefix = "",
+    linkopts = select({
+        ":linux": ["-pthread"],
+        ":macos": [],
+        "//conditions:default": [],
+    }),
+    strip_include_prefix = "include",
+)
+
+cc_library(
+    name = "utest_main",
+    srcs = ["src/utest/test_main.cpp"],
+    copts = ["-std=c++11"],
+    deps = [":utest"],
+)

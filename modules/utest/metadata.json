@@ -1,0 +1,10 @@
+{
+    "homepage": "https://github.com/tymonx/utest",
+    "description": "Lightweight unit testing framework mainly for C++ and also for C projects",
+    "repository": [
+        "github:tymonx/utest"
+    ],
+    "versions": [
+        "f2fe2880253cdb090c906958e4937d24717aa39b"
+    ]
+}

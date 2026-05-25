@@ -1,0 +1,14 @@
+{
+    "name": "utest",
+    "url": "https://github.com/tymonx/utest/archive/f2fe2880253cdb090c906958e4937d24717aa39b.tar.gz",
+    "integrity": "sha256-Qm/J6Tp3C0TPqEFj0Q/T+bvfxOnP7q74aREwhLsTSbA=",
+    "strip_prefix": "utest-f2fe2880253cdb090c906958e4937d24717aa39b",
+    "license": "BSD 3-Clause License",
+    "system": [
+        "macos",
+        "linux"
+    ],
+    "overlay": {
+        "BUILD.bazel": "sha256-53aOXO6YRIdDjVt9tNqXLWpJt8k6Hgy05fMfTNZONi4="
+    }
+}
