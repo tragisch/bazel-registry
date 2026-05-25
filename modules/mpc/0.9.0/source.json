@@ -1,0 +1,10 @@
+{
+    "name": "mpc",
+    "url": "https://github.com/orangeduck/mpc/archive/refs/tags/0.9.0.tar.gz",
+    "integrity": "sha256-2m55iszsV9ewUS7MOK3BUZYa3v3gmBHBwl7pk6ZT5Hw=",
+    "strip_prefix": "mpc-0.9.0",
+    "license": "BSD-3-Clause",
+    "overlay": {
+        "BUILD.bazel": "sha256-RBOD0emVEHU5Kw07sIsSdXxaDobjmyPKlZuE+TO7vSE="
+    }
+}

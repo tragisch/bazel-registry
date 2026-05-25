@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/orangeduck/mpc",
+    "description": "Parser combinator library for C",
+    "repository": [
+        "github:orangeduck/mpc"
+    ],
+    "versions": [
+        "0.9.0"
+    ],
+    "yanked_versions": {}
+}

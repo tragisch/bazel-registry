@@ -45,6 +45,7 @@ jobs:
             {"name":"libsodium","version":"1.0.20","target":"@libsodium//:libsodium","command":"build"},
             {"name":"linmath","version":"3eef82841046507e16a0f6194a61cee2eadd34b3","target":"@linmath//:linmath","command":"build"},
             {"name":"libzmq","version":"4.3.5","target":"@libzmq//:libzmq","command":"build"},
+            {"name":"mpc","version":"0.9.0","target":"@mpc//:mpc","command":"build"},
             {"name":"czmq","version":"4.2.1","target":"@czmq//:czmq","command":"build"},
             {"name":"pcg","version":"83252d9c23df9c82ecb42210afed61a7b42402d7","target":"@pcg//:pcg","command":"build"},
             {"name":"openmp","version":"22.1.1","target":"@openmp//:omp_smoke_test","command":"test"},
