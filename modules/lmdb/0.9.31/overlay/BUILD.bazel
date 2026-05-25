@@ -2,9 +2,8 @@ load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
 cc_library(
     name = "lmdb",
-    srcs = glob([
-        "libraries/liblmdb/mdb*.c",
-    ]) + [
+    srcs = [
+        "libraries/liblmdb/mdb.c",
         # for internal use only
         "libraries/liblmdb/midl.c",
         "libraries/liblmdb/midl.h",

@@ -5,6 +5,6 @@
     "strip_prefix": "lmdb-LMDB_0.9.31",
     "license": "OLDAP-2.8",
     "overlay": {
-        "BUILD.bazel": "sha256-c+x+L5l1kcz+zfqmaSXEqP4D4oO+a/F24pIA3fDHoBY="
+        "BUILD.bazel": "sha256-JN0RAKvtB/9KEWZ++6RHdsP0HV0VKw4ruwih0Gsghgg="
     }
 }
