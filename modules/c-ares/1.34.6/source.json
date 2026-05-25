@@ -1,0 +1,15 @@
+{
+    "name": "c-ares",
+    "url": "https://github.com/c-ares/c-ares/archive/refs/tags/v1.34.6.tar.gz",
+    "integrity": "sha256-Q1iTn/gAsTuS831f3aADcYEB+u373ueS1red3BpT2JA=",
+    "strip_prefix": "c-ares-1.34.6",
+    "license": "MIT",
+    "system": [
+        "macos"
+    ],
+    "overlay": {
+        "BUILD.bazel": "sha256-ZszckR5L9VXZ5J9kJEh2IyzmFF5VCnJ2WPmyiZorj+8=",
+        "ares_ipv6.h": "sha256-7vgBy1G524jAAE9vljo2hhcrY9gc0lhOZjSjzcVmswE=",
+        "darwin_ares_config.h": "sha256-KvBtVLzglLiOKiWPoKih5ZWJktKic1qmjCg57eX4AOo="
+    }
+}

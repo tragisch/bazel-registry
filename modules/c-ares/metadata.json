@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/c-ares/c-ares",
+    "description": "C library for asynchronous DNS requests",
+    "repository": [
+        "github:c-ares/c-ares"
+    ],
+    "versions": [
+        "1.34.6"
+    ],
+    "yanked_versions": {}
+}
