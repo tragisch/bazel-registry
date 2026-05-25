@@ -1,0 +1,9 @@
+"""
+gunslinger module
+"""
+module(
+    name = "gunslinger",
+    version = "0.03-alpha",
+)
+
+bazel_dep(name = "rules_cc", version = "0.2.17")

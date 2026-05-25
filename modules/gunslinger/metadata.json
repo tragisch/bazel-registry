@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/MrFrenik/gunslinger",
+    "description": "Header-only C99 framework for multimedia applications",
+    "repository": [
+        "github:MrFrenik/gunslinger"
+    ],
+    "versions": [
+        "0.03-alpha"
+    ],
+    "yanked_versions": {}
+}

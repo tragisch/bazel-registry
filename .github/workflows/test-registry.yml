@@ -42,6 +42,7 @@ jobs:
             {"name":"cglm","version":"0.9.6","target":"@cglm//:cglmc","command":"build"},
             {"name":"graphblas","version":"10.3.1","target":"@graphblas//:graphblas","command":"build"},
             {"name":"gnuplot_i","version":"1.0","target":"@gnuplot_i//:gnuplot_i","command":"build"},
+            {"name":"gunslinger","version":"0.03-alpha","target":"@gunslinger//:gunslinger","command":"build"},
             {"name":"libb64","version":"2.0.0.1","target":"@libb64//:libb64","command":"build"},
             {"name":"libcsv","version":"b1d5212831842ee5869d99bc208a21837e4037d5","target":"@libcsv//:libcsv","command":"build"},
             {"name":"liblinear","version":"247","target":"@liblinear//:liblinear","command":"build"},

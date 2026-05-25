@@ -1,0 +1,21 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "gunslinger",
+    srcs = glob([
+        "external/stb/*.h",
+        "external/cgltf/*.h",
+        "external/glad/*.h",
+        "external/dr_libs/*.h",
+        "external/glfw/*.h",
+        "external/KHR/*.h",
+        "external/miniaudio/*.h",
+        "impl/*.h",
+        "util/*.h",
+    ]),
+    hdrs = ["gs.h"],
+    includes = [
+        ".",
+    ],
+    visibility = ["//visibility:public"],
+)

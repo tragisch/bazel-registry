@@ -1,0 +1,10 @@
+{
+    "name": "gunslinger",
+    "url": "https://github.com/MrFrenik/gunslinger/archive/refs/tags/v0.03-alpha.tar.gz",
+    "integrity": "sha256-N+r6wupK4tIQwC+Yqt5uHR/SewY+Z1IV7/zlYf1XUnk=",
+    "strip_prefix": "gunslinger-0.03-alpha",
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-p9CqIbd2u5inWd69qDhL7JLr2ZMKETmjUulqhBSrZj0="
+    }
+}
