@@ -67,6 +67,7 @@ cc_library(
         "..",
         "../cdt",
     ],
+    linkstatic = True,
     local_defines = [
         "EXPORT_CGRAPH",
         "EXPORT_CGHDR",
@@ -74,7 +75,6 @@ cc_library(
         "@bazel_tools//src/conditions:windows": ["YY_NO_UNISTD_H"],
         "//conditions:default": [],
     }),
-    linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [
         "//:graphviz_config",
