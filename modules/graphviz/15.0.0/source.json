@@ -1,0 +1,17 @@
+{
+    "name": "graphviz",
+    "url": "https://gitlab.com/graphviz/graphviz/-/archive/15.0.0/graphviz-15.0.0.tar.gz",
+    "integrity": "sha256-36W+XDEfdgqpyIJzyPgQG7EfULDeiym71UrP863C1WM=",
+    "strip_prefix": "graphviz-15.0.0",
+    "license": "EPL-2.0",
+    "system": [
+        "macos",
+        "linux"
+    ],
+    "overlay": {
+        "BUILD.bazel": "sha256-1Kif02ji4jf04NnbBWyWR+lpuBE3mBRWBz2pUBdJoeQ=",
+        "lib/cdt/BUILD.bazel": "sha256-1I1Nv6bHptMvYVmi9N76wnEmCf6uwpCdaY0DKtv3wu4=",
+        "lib/cgraph/BUILD.bazel": "sha256-17Friyg8WEsmgPlYFC4iPoy4pU/rgHMhjPyfNLLXeyQ=",
+        "lib/util/BUILD.bazel": "sha256-aZK+6uXU8qsgcLCc7aRP2YQWEsp9XATZ/MsgB7Tz5iY="
+    }
+}

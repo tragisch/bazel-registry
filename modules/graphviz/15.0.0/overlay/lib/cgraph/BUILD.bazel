@@ -1,0 +1,83 @@
+load("@bison//:bison.bzl", "bison")
+load("@flex//:flex.bzl", "flex")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+bison(
+    name = "gen_grammar",
+    srcs = ["grammar.y"],
+    outs = [
+        "grammar.c",
+        "grammar.h",
+    ],
+    args = [
+        "--defines=$(execpath grammar.h)",
+        "--output=$(execpath grammar.c)",
+        "$(execpath grammar.y)",
+    ],
+)
+
+flex(
+    name = "gen_scan",
+    srcs = ["scan.l"],
+    outs = ["scan.c"],
+    args = [
+        "--case-insensitive",
+        "--outfile=$(execpath scan.c)",
+        "$(execpath scan.l)",
+    ],
+)
+
+cc_library(
+    name = "cgraph",
+    srcs = [
+        "acyclic.c",
+        "agerror.c",
+        "apply.c",
+        "attr.c",
+        "edge.c",
+        "graph.c",
+        "id.c",
+        "imap.c",
+        "ingraphs.c",
+        "io.c",
+        "node.c",
+        "node_induce.c",
+        "obj.c",
+        "rec.c",
+        "refstr.c",
+        "subg.c",
+        "tred.c",
+        "unflatten.c",
+        "utils.c",
+        "write.c",
+        ":gen_grammar",
+        ":gen_scan",
+    ],
+    hdrs = [
+        "agstrcanon.h",
+        "cghdr.h",
+        "cgraph.h",
+        "ingraphs.h",
+        "node_set.h",
+        "rdr.h",
+        ":gen_grammar",
+    ],
+    includes = [
+        ".",
+        "..",
+        "../cdt",
+    ],
+    local_defines = [
+        "EXPORT_CGRAPH",
+        "EXPORT_CGHDR",
+    ] + select({
+        "@bazel_tools//src/conditions:windows": ["YY_NO_UNISTD_H"],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cdt",
+        "//lib/util",
+    ],
+)

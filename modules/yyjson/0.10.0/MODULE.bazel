@@ -1,6 +1,7 @@
 """
 yyjson module
 """
+
 module(
     name = "yyjson",
     version = "0.10.0",

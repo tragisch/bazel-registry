@@ -1,0 +1,55 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+genrule(
+    name = "config_h",
+    outs = ["config.h"],
+    cmd = select({
+        "@bazel_tools//src/conditions:windows": """
+cat > "$@" <<'EOF'
+#pragma once
+
+/* Minimal Bazel config for cdt/util/cgraph on Windows */
+#define BROWSER "start"
+#define DEFAULT_DPI 96
+#define GVPLUGIN_CONFIG_FILE "config8"
+#define PACKAGE_VERSION "bazel"
+EOF
+""",
+        "@bazel_tools//src/conditions:darwin": """
+cat > "$@" <<'EOF'
+#pragma once
+
+/* Minimal Bazel config for cdt/util/cgraph on macOS */
+#define DARWIN 1
+#define DARWIN_DYLIB 1
+#define BROWSER "open"
+#define DEFAULT_DPI 96
+#define GVPLUGIN_CONFIG_FILE "config8"
+#define PACKAGE_VERSION "bazel"
+EOF
+""",
+        "//conditions:default": """
+cat > "$@" <<'EOF'
+#pragma once
+
+/* Minimal Bazel config for cdt/util/cgraph on Linux */
+#define BROWSER "xdg-open"
+#define DEFAULT_DPI 96
+#define GVPLUGIN_CONFIG_FILE "config8"
+#define PACKAGE_VERSION "bazel"
+EOF
+""",
+    }),
+)
+
+cc_library(
+    name = "graphviz_config",
+    hdrs = [":config_h"],
+)
+
+alias(
+    name = "cgraph",
+    actual = "//lib/cgraph:cgraph",
+)

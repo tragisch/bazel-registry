@@ -1,0 +1,21 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "util",
+    srcs = [
+        "arena.c",
+        "base64.c",
+        "gv_find_me.c",
+        "gv_fopen.c",
+        "list.c",
+        "random.c",
+        "xml.c",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [".."] + select({
+        "@bazel_tools//src/conditions:windows": ["../../windows/include/unistd"],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+    deps = ["//:graphviz_config"],
+)

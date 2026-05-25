@@ -1,0 +1,32 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "cdt",
+    srcs = [
+        "dtclose.c",
+        "dtdisc.c",
+        "dtextract.c",
+        "dtflatten.c",
+        "dthash.c",
+        "dtmethod.c",
+        "dtopen.c",
+        "dtrenew.c",
+        "dtrestore.c",
+        "dtsize.c",
+        "dtstat.c",
+        "dtstrhash.c",
+        "dttree.c",
+        "dtview.c",
+        "dtwalk.c",
+    ],
+    hdrs = [
+        "cdt.h",
+        "dthdr.h",
+    ],
+    includes = [
+        ".",
+        "..",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["//:graphviz_config"],
+)
