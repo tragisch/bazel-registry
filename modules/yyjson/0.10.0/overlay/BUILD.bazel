@@ -1,0 +1,18 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "yyjson",
+    srcs = ["src/yyjson.c"],
+    hdrs = ["src/yyjson.h"],
+    copts = [
+        "-DYYJSON_DISABLE_COMMENT",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-pedantic",
+        "-pedantic-errors",
+        "-ffast-math",
+    ],
+    includes = ["src"],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,10 @@
+{
+    "name": "yyjson",
+    "url": "https://github.com/ibireme/yyjson/archive/refs/tags/0.10.0.tar.gz",
+    "integrity": "sha256-DZAcssRcVYbj86QkXljCJS1rJL9LQCcj9heVI9OJsWU=",
+    "strip_prefix": "yyjson-0.10.0",
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-dCPC9FakWlDTMC9w8YN+50JYKokBQfkvzcJxyYvzfiY="
+    }
+}

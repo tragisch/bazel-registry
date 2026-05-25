@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/ibireme/yyjson",
+    "description": "High performance JSON library written in ANSI C",
+    "repository": [
+        "github:ibireme/yyjson"
+    ],
+    "versions": [
+        "0.10.0"
+    ],
+    "yanked_versions": {}
+}
