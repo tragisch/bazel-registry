@@ -1,0 +1,10 @@
+{
+    "name": "pbplots",
+    "url": "https://github.com/InductiveComputerScience/pbPlots/archive/refs/tags/v0.1.9.1.tar.gz",
+    "integrity": "sha256-5yXfyHKHtSjHoZc/ZUKe1eD5P9c/RTRKxtQAeRus0bQ=",
+    "strip_prefix": "pbPlots-0.1.9.1",
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-qdo9VbmttbLkMOdGdtuDYimZwDT0/uwi2I/2nv2Z9Ew="
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/InductiveComputerScience/pbPlots",
+    "description": "Plotting library available in many programming languages",
+    "repository": [
+        "github:InductiveComputerScience/pbPlots"
+    ],
+    "versions": [
+        "0.1.9.1"
+    ],
+    "yanked_versions": {}
+}

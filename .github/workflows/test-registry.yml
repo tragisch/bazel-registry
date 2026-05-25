@@ -51,6 +51,7 @@ jobs:
             {"name":"mpc","version":"0.9.0","target":"@mpc//:mpc","command":"build"},
             {"name":"czmq","version":"4.2.1","target":"@czmq//:czmq","command":"build"},
             {"name":"pcg","version":"83252d9c23df9c82ecb42210afed61a7b42402d7","target":"@pcg//:pcg","command":"build"},
+            {"name":"pbplots","version":"0.1.9.1","target":"@pbplots//:pbPlots","command":"build"},
             {"name":"openmp","version":"22.1.1","target":"@openmp//:omp_smoke_test","command":"test"},
             {"name":"raylib","version":"5.5","target":"@raylib//:raylib","command":"build"},
             {"name":"sds","version":"2.0.0","target":"@sds//:sds","command":"build"},
