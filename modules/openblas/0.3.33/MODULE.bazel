@@ -1,6 +1,6 @@
 module(
     name = "openblas",
-    version = "1bd74ad3d1e8d21f86d1a6be35abfcdf27c0208a",
+    version = "0.3.33",
 )
 
 bazel_dep(name = "rules_cc", version = "0.2.17")

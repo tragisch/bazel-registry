@@ -5,6 +5,6 @@
         "github:OpenMathLib/OpenBLAS"
     ],
     "versions": [
-        "1bd74ad3d1e8d21f86d1a6be35abfcdf27c0208a"
+        "0.3.33"
     ]
 }

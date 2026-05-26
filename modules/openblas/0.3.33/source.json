@@ -1,8 +1,8 @@
 {
     "name": "openblas",
-    "url": "https://github.com/OpenMathLib/OpenBLAS/archive/1bd74ad3d1e8d21f86d1a6be35abfcdf27c0208a.tar.gz",
-    "integrity": "sha256-j9yaj9xVd1VdnLBLXphOHMZ2Gjz1KmygL/sANkqXLBs=",
-    "strip_prefix": "OpenBLAS-1bd74ad3d1e8d21f86d1a6be35abfcdf27c0208a",
+    "url": "https://github.com/OpenMathLib/OpenBLAS/archive/refs/tags/v0.3.33.tar.gz",
+    "integrity": "sha256-Z2GvHZ9dNTq08LdJe+JkMxOzbI8xyuwBRL/vGY5x5qs=",
+    "strip_prefix": "OpenBLAS-0.3.33",
     "license": "BSD-3-Clause",
     "overlay": {
         "BUILD.bazel": "sha256-wbEjYFuHkNy/ykT88jwEYo8Dcrp/ep/5ccA4oSYLNYo=",
