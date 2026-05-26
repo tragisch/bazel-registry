@@ -8,6 +8,7 @@ OPENBLAS_COMMON_COPTS = [
     "-DOPENBLAS_BAZEL",
     "-DNO_LAPACKE",
     "-DNO_AFFINITY",
+    "-fopenmp",
     "-Wno-unused-function",
 ]
 
@@ -56,6 +57,7 @@ cc_library(
     ],
     includes = OPENBLAS_COMMON_INCLUDES,
     linkopts = ["-lm"],
+    deps = ["@openmp//:libomp"],
 )
 
 cc_test(
@@ -64,16 +66,9 @@ cc_test(
     deps = [":openblas"],
 )
 
-cc_test(
-    name = "openblas_lapack_smoke_test",
-    srcs = ["//bazel:openblas_lapack_smoke_test.c"],
-    deps = [":openblas"],
-)
-
 test_suite(
     name = "openblas_tests",
     tests = [
         ":openblas_cblas_smoke_test",
-        ":openblas_lapack_smoke_test",
     ],
 )

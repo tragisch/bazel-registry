@@ -56,7 +56,8 @@ jobs:
             {"name":"czmq","version":"4.2.1","target":"@czmq//:czmq","command":"build"},
             {"name":"pcg","version":"83252d9c23df9c82ecb42210afed61a7b42402d7","target":"@pcg//:pcg","command":"build"},
             {"name":"pbplots","version":"0.1.9.1","target":"@pbplots//:pbPlots","command":"build"},
-            {"name":"openblas","version":"0.3.33","target":"@openblas//:openblas","command":"build"},
+            {"name":"openblas","version":"0.3.33","target":"@openblas//:openblas","command":"build","os":["ubuntu-latest"]},
+            {"name":"openblas_lapack","version":"0.3.33","target":"@openblas_lapack//:openblas_lapack","command":"build","os":["ubuntu-latest"]},
             {"name":"openmp","version":"22.1.1","target":"@openmp//:omp_smoke_test","command":"test"},
             {"name":"raylib","version":"5.5","target":"@raylib//:raylib","command":"build"},
             {"name":"sds","version":"2.0.0","target":"@sds//:sds","command":"build"},
@@ -176,9 +177,15 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-          matrix=$(jq -cn \
+          include=$(jq -cn \
             --argjson modules "$selected_modules" \
-            '{os: ["ubuntu-latest", "macos-latest"], module: $modules}')
+            '[
+              $modules[] as $m
+              | (($m.os // ["ubuntu-latest", "macos-latest"])[]) as $os
+              | {os: $os, module: ($m | del(.os))}
+            ]')
+
+          matrix=$(jq -cn --argjson include "$include" '{include: $include}')
 
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
           echo "count=$count" >> "$GITHUB_OUTPUT"

@@ -88,6 +88,8 @@ cc_binary(
 | [lmdb](https://github.com/LMDB/lmdb)                           | 0.9.31     | Lightning memory-mapped database library                                    | `@lmdb//:lmdb`              | ✅     |
 | [matio](https://github.com/tbeu/matio)                         | 1.5.27     | MATLAB MAT file I/O library                                                 | `@matio//:matio`            | ✅     |
 | [mpc](https://github.com/orangeduck/mpc)                       | 0.9.0      | Parser combinator library for C                                             | `@mpc//:mpc`                | ✅     |
+| [openblas](https://www.openblas.net/)                          | 0.3.33     | OpenBLAS with a native Bazel BLAS facade and OpenMP runtime integration    | `@openblas//:openblas`      | ✅     |
+| [openblas_lapack](https://www.openblas.net/)                   | 0.3.33     | Separate LAPACK facade module built on top of `openblas`                   | `@openblas_lapack//:openblas_lapack` | ✅ |
 | [openmp](https://openmp.llvm.org/)                             | 22.1.1     | LLVM OpenMP runtime as native Bazel module with static `libomp`             | `@openmp//:libomp`          | ✅     |
 | [pbplots](https://github.com/InductiveComputerScience/pbPlots) | 0.1.9.1    | Plotting library available in many programming languages                    | `@pbplots//:pbPlots`        | ✅     |
 | [pcg](https://github.com/imneme/pcg-c)                         | 83252d9    | PCG random number generation library, C edition                             | `@pcg//:pcg`                | ✅     |
@@ -100,6 +102,8 @@ cc_binary(
 | [yyjson](https://github.com/ibireme/yyjson)                    | 0.10.0     | High performance JSON library written in ANSI C                             | `@yyjson//:yyjson`          | ✅     |
 
 > **Note:** `openmp` exposes the static runtime target `@openmp//:libomp` (alias for `libomp_runtime_static`) and is validated in CI via `@openmp//:omp_smoke_test`.
+
+> **Note:** `openblas` and `openblas_lapack` are currently supported on Linux in this registry.
 
 > **Note:** `cglm` exposes `@cglm//:cglm` (header-only) and `@cglm//:cglmc` (compiled `glmc_*` API).
 

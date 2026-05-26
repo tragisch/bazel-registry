@@ -4,13 +4,16 @@
     "integrity": "sha256-Z2GvHZ9dNTq08LdJe+JkMxOzbI8xyuwBRL/vGY5x5qs=",
     "strip_prefix": "OpenBLAS-0.3.33",
     "license": "BSD-3-Clause",
+    "system": [
+        "linux"
+    ],
     "overlay": {
-        "BUILD.bazel": "sha256-wbEjYFuHkNy/ykT88jwEYo8Dcrp/ep/5ccA4oSYLNYo=",
+        "BUILD.bazel": "sha256-i9Ss35BPm9qLD+3fTn/JGAjsH8x/2ua+6QbVkYPIPoo=",
         "bazel/BUILD.bazel": "sha256-4KUHnIx82fQkMtFVx0b7nlDDW+sruiuag3cXmu+zeDU=",
         "bazel/config.h": "sha256-sPKutSJLZ53534u0xVCfAlWNm0Iy8vLWgfFgFBnajTE=",
         "bazel/lapack_ilaenv_stub.c": "sha256-rZibjj2eLnmO6qB44QYpotuU5J+XhbkYqd5jGKKJTcc=",
         "bazel/memory_stub.c": "sha256-OBCIFeXiHJAKxzf0O0PB5mMtS2OhDUY8Zp6ALLk9VfQ=",
-        "bazel/openblas_cblas_smoke_test.c": "sha256-lrUWtlUCVhRRvL7N8ZLxHxpRjWxluvQnovz2iFjnS7s=",
+        "bazel/openblas_cblas_smoke_test.c": "sha256-Yxc/EcK7JX+JStqgly8k48tx4/wv32m6x1+gCojiUUE=",
         "bazel/openblas_lapack_smoke_test.c": "sha256-EVGXiJ1Fl+nnZfoGo6rZD+jyrpM2jQjH3zUlwOJltuI=",
         "bazel/openblas_rules.bzl": "sha256-AcCebYPGr8amk7QwZL8wVNNWHrKI63/hOwUTIW1qoQM="
     },

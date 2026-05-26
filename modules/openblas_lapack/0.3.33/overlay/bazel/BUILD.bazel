@@ -1,0 +1,3 @@
+exports_files([
+    "openblas_lapack_smoke_test.c",
+])

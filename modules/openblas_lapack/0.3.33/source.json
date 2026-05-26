@@ -1,0 +1,15 @@
+{
+    "name": "openblas_lapack",
+    "url": "https://github.com/OpenMathLib/OpenBLAS/archive/refs/tags/v0.3.33.tar.gz",
+    "integrity": "sha256-Z2GvHZ9dNTq08LdJe+JkMxOzbI8xyuwBRL/vGY5x5qs=",
+    "strip_prefix": "OpenBLAS-0.3.33",
+    "license": "BSD-3-Clause",
+    "system": [
+        "linux"
+    ],
+    "overlay": {
+        "BUILD.bazel": "sha256-6vysNhNqimOC0UdbpXsqsgYSh3OJ7rxpmGSL8LwqCCs=",
+        "bazel/BUILD.bazel": "sha256-XTMf2aePUbXIi4OyLZNx4fJxZ8SxlutYD8av0k1ibaY=",
+        "bazel/openblas_lapack_smoke_test.c": "sha256-p/T9UaUzv8MsCgn6Cem9aWHcbTs3xihBDuz4ZKedad0="
+    }
+}

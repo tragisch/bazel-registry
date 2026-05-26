@@ -1,6 +1,6 @@
 {
     "homepage": "https://www.openblas.net/",
-    "description": "OpenBLAS as a native Bazel module with an OpenMP-enabled BLAS facade.",
+    "description": "Separate LAPACK facade module built on top of @openblas//:openblas.",
     "repository": [
         "github:OpenMathLib/OpenBLAS"
     ],
