@@ -1,0 +1,7 @@
+exports_files([
+    "config.h",
+    "lapack_ilaenv_stub.c",
+    "memory_stub.c",
+    "openblas_cblas_smoke_test.c",
+    "openblas_lapack_smoke_test.c",
+])

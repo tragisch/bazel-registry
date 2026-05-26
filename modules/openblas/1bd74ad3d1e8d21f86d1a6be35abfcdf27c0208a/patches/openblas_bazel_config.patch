@@ -1,0 +1,15 @@
+diff --git a/common.h b/common.h
+index 4746633c1..eb02ce803 100644
+--- a/common.h
++++ b/common.h
+@@ -57,7 +57,9 @@ extern "C" {
+ #define __USE_SVID
+ #endif
+ 
+-#ifdef BUILD_KERNEL
++#ifdef OPENBLAS_BAZEL
++#include "bazel/config.h"
++#elif defined(BUILD_KERNEL)
+ #include "config_kernel.h"
+ #else
+ #include "config.h"

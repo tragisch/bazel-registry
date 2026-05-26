@@ -1,0 +1,79 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
+load("//bazel:openblas_rules.bzl", "openblas_real_targets")
+
+package(default_visibility = ["//visibility:public"])
+
+OPENBLAS_COMMON_COPTS = [
+    "-DOPENBLAS_BAZEL",
+    "-DNO_LAPACKE",
+    "-DNO_AFFINITY",
+    "-Wno-unused-function",
+]
+
+OPENBLAS_COMMON_INCLUDES = [
+    "driver/level3",
+    "kernel/generic",
+    "lapack/laswp/generic",
+]
+
+OPENBLAS_COMMON_HDRS = glob(["common*.h"]) + [
+    "cblas.h",
+    "l1param.h",
+    "param.h",
+    "symcopy.h",
+]
+
+OPENBLAS_INCLUDED_C_FRAGMENTS = [
+    "driver/level3/level3.c",
+    "driver/level3/level3_syr2k.c",
+    "driver/level3/level3_syrk.c",
+    "kernel/generic/conversion_macros.h",
+    "lapack/laswp/generic/laswp_k_1.c",
+    "lapack/laswp/generic/laswp_k_2.c",
+    "lapack/laswp/generic/laswp_k_4.c",
+    "lapack/laswp/generic/laswp_k_8.c",
+    "lapack/laswp/generic/zlaswp_k_1.c",
+    "lapack/laswp/generic/zlaswp_k_2.c",
+    "lapack/laswp/generic/zlaswp_k_4.c",
+]
+
+cc_library(
+    name = "openblas",
+    srcs = openblas_real_targets() + [
+        "//bazel:lapack_ilaenv_stub.c",
+        "//bazel:memory_stub.c",
+    ],
+    hdrs = OPENBLAS_COMMON_HDRS + [
+        "//bazel:config.h",
+    ],
+    textual_hdrs = OPENBLAS_INCLUDED_C_FRAGMENTS,
+    copts = OPENBLAS_COMMON_COPTS,
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = OPENBLAS_COMMON_INCLUDES,
+    linkopts = ["-lm"],
+)
+
+cc_test(
+    name = "openblas_cblas_smoke_test",
+    srcs = ["//bazel:openblas_cblas_smoke_test.c"],
+    deps = [":openblas"],
+)
+
+cc_test(
+    name = "openblas_lapack_smoke_test",
+    srcs = ["//bazel:openblas_lapack_smoke_test.c"],
+    deps = [":openblas"],
+)
+
+test_suite(
+    name = "openblas_tests",
+    tests = [
+        ":openblas_cblas_smoke_test",
+        ":openblas_lapack_smoke_test",
+    ],
+)
