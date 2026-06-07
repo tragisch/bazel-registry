@@ -29,6 +29,8 @@ OPENBLAS_INCLUDED_C_FRAGMENTS = [
     "driver/level3/level3.c",
     "driver/level3/level3_syr2k.c",
     "driver/level3/level3_syrk.c",
+    "driver/level3/level3_thread.c",
+    "driver/level3/level3_syrk_threaded.c",
     "kernel/generic/conversion_macros.h",
     "lapack/laswp/generic/laswp_k_1.c",
     "lapack/laswp/generic/laswp_k_2.c",
@@ -38,6 +40,90 @@ OPENBLAS_INCLUDED_C_FRAGMENTS = [
     "lapack/laswp/generic/zlaswp_k_2.c",
     "lapack/laswp/generic/zlaswp_k_4.c",
 ]
+
+cc_library(
+    name = "openblas_blas_l1_thread",
+    srcs = ["driver/others/blas_l1_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I."],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:libomp"],
+)
+
+cc_library(
+    name = "openblas_gemm_thread_m",
+    srcs = ["driver/level3/gemm_thread_m.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=gemm_thread_m"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:libomp"],
+)
+
+cc_library(
+    name = "openblas_gemm_thread_n",
+    srcs = ["driver/level3/gemm_thread_n.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=gemm_thread_n"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:libomp"],
+)
+
+cc_library(
+    name = "openblas_gemm_thread_mn",
+    srcs = ["driver/level3/gemm_thread_mn.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=gemm_thread_mn"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:libomp"],
+)
+
+cc_library(
+    name = "openblas_gemm_thread_variable",
+    srcs = ["driver/level3/gemm_thread_variable.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=gemm_thread_variable"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:libomp"],
+)
+
+cc_library(
+    name = "openblas_syrk_thread",
+    srcs = ["driver/level3/syrk_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=syrk_thread"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:libomp"],
+)
 
 cc_library(
     name = "openblas",
@@ -60,7 +146,15 @@ cc_library(
     ],
     includes = ["."] + OPENBLAS_COMMON_INCLUDES,
     linkopts = ["-lm"],
-    deps = ["@openmp//:libomp"],
+    deps = [
+        "@openmp//:libomp",
+        ":openblas_blas_l1_thread",
+        ":openblas_gemm_thread_m",
+        ":openblas_gemm_thread_n",
+        ":openblas_gemm_thread_mn",
+        ":openblas_gemm_thread_variable",
+        ":openblas_syrk_thread",
+    ],
 )
 
 cc_test(

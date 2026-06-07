@@ -51,4 +51,10 @@
 #define L2_ASSOCIATIVE 8
 #define GEMM_MULTITHREAD_THRESHOLD 4
 
+#define USE_OPENMP 1
+#define SMP_SERVER 1
+
+#define MAX_CPU_NUMBER 64
+#define MAX_PARALLEL_NUMBER 4
+
 #endif
