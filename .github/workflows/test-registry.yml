@@ -62,7 +62,7 @@ jobs:
             {"name":"raylib","version":"5.5","target":"@raylib//:raylib","command":"build"},
             {"name":"sds","version":"2.0.0","target":"@sds//:sds","command":"build"},
             {"name":"sha1","version":"e1e2536fcf6a8f9703be8c85d58724b408552287","target":"@sha1//:sha1","command":"build"},
-            {"name":"throw_the_switch","version":"2.5.2","target":"@throw_the_switch//:Unity","command":"build"},
+            {"name":"throw_the_switch","version":"2.6.1-bazel.1","target":"@throw_the_switch//:Unity","command":"build"},
             {"name":"utest","version":"f2fe2880253cdb090c906958e4937d24717aa39b","target":"@utest//:utest_main","command":"build"},
             {"name":"uthash","version":"2.3.0","target":"@uthash//:uthash","command":"build"},
             {"name":"yyjson","version":"0.10.0","target":"@yyjson//:yyjson","command":"build"}

@@ -1,0 +1,11 @@
+{
+    "name": "throw_the_switch",
+    "url": "https://github.com/tragisch/Unity/archive/refs/tags/v2.6.1-bazel.1.tar.gz",
+    "integrity": "sha256-eRqRn00tYwV5iyRldTVMQQXWxG573Za+1HV1M7vVys4=",
+    "strip_prefix": "Unity-2.6.1-bazel.1",
+    "path-strip": 1,
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-c7DzxF5DxOEGO884NSq/Ur3ib/yRbQRiIVRvzxTders="
+    }
+}

@@ -1,7 +1,8 @@
 {
-    "homepage": "https://github.com/ThrowTheSwitch/Unity",
+    "homepage": "https://github.com/tragisch/Unity",
     "description": "Unity C Testing Framework - Simple Unit Testing for C",
     "versions": [
-        "2.5.2"
+        "2.5.2",
+        "2.6.1-bazel.1"
     ]
 }
