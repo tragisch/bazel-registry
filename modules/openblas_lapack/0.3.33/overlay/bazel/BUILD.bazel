@@ -1,3 +1,7 @@
 exports_files([
+    "lapacke.h",
+    "lapack_blas_shims.c",
+    "lapack_ilaenv_stub.c",
     "openblas_lapack_smoke_test.c",
+    "lapacke_sgesv.c",
 ])

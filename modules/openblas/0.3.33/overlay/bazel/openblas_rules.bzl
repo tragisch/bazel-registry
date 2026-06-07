@@ -170,12 +170,22 @@ def openblas_real_targets():
                 defines = precision.kernel_defines + gemm_variant.defines,
                 symbol = "%sgemm_%s" % (precision.prefix, gemm_variant.suffix),
             )
-        for gemm_kernel in [
+        gemm_kernels = [
             struct(name = "gemm_kernel", src = "kernel/generic/gemmkernel_2x2.c", symbol = "gemm_kernel"),
             struct(name = "gemm_beta", src = "kernel/generic/gemm_beta.c", symbol = "gemm_beta"),
             struct(name = "gemm_oncopy", src = "kernel/generic/gemm_ncopy_2.c", symbol = "gemm_oncopy"),
             struct(name = "gemm_otcopy", src = "kernel/generic/gemm_tcopy_2.c", symbol = "gemm_otcopy"),
-        ]:
+        ]
+
+        if precision.prefix == "s":
+            gemm_kernels = [
+                struct(name = "gemm_kernel", src = "kernel/x86_64/sgemm_kernel_8x4_haswell_2.c", symbol = "gemm_kernel"),
+                struct(name = "gemm_beta", src = "kernel/x86_64/sgemm_beta_skylakex.c", symbol = "gemm_beta"),
+                struct(name = "gemm_oncopy", src = "kernel/x86_64/sgemm_ncopy_4_skylakex.c", symbol = "gemm_oncopy"),
+                struct(name = "gemm_otcopy", src = "kernel/generic/gemm_tcopy_4.c", symbol = "gemm_otcopy"),
+            ]
+
+        for gemm_kernel in gemm_kernels:
             _openblas_object(
                 targets = targets,
                 name = "%s%s" % (precision.prefix, gemm_kernel.name),
@@ -741,11 +751,11 @@ def openblas_real_targets():
         struct(prefix = "z", real_prefix = "d", index_prefix = "iz", c_type_defines = ["COMPLEX", "DOUBLE"], kernel_defines = ["COMPLEX", "DOUBLE"]),
     ]:
         for op in [
-            struct(name = "axpy", src = "interface/zaxpy.c", kernel_src = "kernel/arm/zaxpy.c", extra_defines = []),
-            struct(name = "axpyc", src = "interface/zaxpy.c", kernel_src = "kernel/arm/zaxpy.c", extra_defines = ["CONJ"]),
+            struct(name = "axpy", src = "interface/zaxpy.c", kernel_src = "kernel/x86_64/zaxpy.c", extra_defines = []),
+            struct(name = "axpyc", src = "interface/zaxpy.c", kernel_src = "kernel/x86_64/zaxpy.c", extra_defines = ["CONJ"]),
             struct(name = "copy", src = "interface/copy.c", kernel_src = "kernel/arm/zcopy.c", extra_defines = []),
             struct(name = "swap", src = "interface/zswap.c", kernel_src = "kernel/arm/zswap.c", extra_defines = []),
-            struct(name = "scal", src = "interface/zscal.c", kernel_src = "kernel/arm/zscal.c", extra_defines = []),
+            struct(name = "scal", src = "interface/zscal.c", kernel_src = "kernel/x86_64/zscal.c", extra_defines = []),
         ]:
             _openblas_object(
                 targets = targets,
@@ -798,13 +808,13 @@ def openblas_real_targets():
             _openblas_object(
                 targets = targets,
                 name = "%s%s_kernel" % (precision.prefix, dot.name),
-                src = "kernel/arm/zdot.c",
+                src = "kernel/x86_64/zdot.c",
                 defines = precision.kernel_defines + dot.extra_defines,
                 symbol = "%s%s_k" % (precision.prefix, dot.name),
             )
 
         for reduction in [
-            struct(name = "asum", src = "interface/asum.c", kernel_src = "kernel/arm/zasum.c"),
+            struct(name = "asum", src = "interface/asum.c", kernel_src = "kernel/x86_64/zasum.c"),
             struct(name = "nrm2", src = "interface/nrm2.c", kernel_src = "kernel/arm/znrm2.c"),
         ]:
             _openblas_object(

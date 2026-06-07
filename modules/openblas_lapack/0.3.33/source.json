@@ -8,8 +8,12 @@
         "linux"
     ],
     "overlay": {
-        "BUILD.bazel": "sha256-6vysNhNqimOC0UdbpXsqsgYSh3OJ7rxpmGSL8LwqCCs=",
-        "bazel/BUILD.bazel": "sha256-XTMf2aePUbXIi4OyLZNx4fJxZ8SxlutYD8av0k1ibaY=",
-        "bazel/openblas_lapack_smoke_test.c": "sha256-p/T9UaUzv8MsCgn6Cem9aWHcbTs3xihBDuz4ZKedad0="
+        "BUILD.bazel": "sha256-TdADMv/zPyqq/y11I73GqcJYK6CwXs5JP+zF3hHb+BI=",
+        "bazel/BUILD.bazel": "sha256-26smamuRfQQb7OfFG07/wGS929o7TKGkt8sJbPsSjLI=",
+        "bazel/lapack_ilaenv_stub.c": "sha256-qXGmVjIfR+CCfPVCWCec2L3Ng6XYs+S8e+SQaMCNGeQ=",
+        "bazel/lapack_blas_shims.c": "sha256-58Tnb83rzYqKVl1BPPvU+9fu4ZAsAEjGMYK08igiu1c=",
+        "bazel/lapacke_sgesv.c": "sha256-pQMa00cGq9d2XA814PL+MpIsboeG0Wjv4b9k+B6l2m4=",
+        "bazel/openblas_lapack_smoke_test.c": "sha256-s3vR+0JClT4L8IDReSJfhrk/4sW0PWCF1K2uhGoPioU=",
+        "bazel/lapacke.h": "sha256-NUVqbo2tQ8JNQhRDinaRTcPQtvU1s90bakze6AK3MiI="
     }
 }

@@ -42,6 +42,9 @@ OPENBLAS_INCLUDED_C_FRAGMENTS = [
 cc_library(
     name = "openblas",
     srcs = openblas_real_targets() + [
+        "driver/others/blas_server_callback.c",
+        "driver/others/blas_server_omp.c",
+        "driver/others/openblas_env.c",
         "//bazel:lapack_ilaenv_stub.c",
         "//bazel:memory_stub.c",
     ],
@@ -55,7 +58,7 @@ cc_library(
         "NO_AFFINITY",
         "NO_LAPACKE",
     ],
-    includes = OPENBLAS_COMMON_INCLUDES,
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
     linkopts = ["-lm"],
     deps = ["@openmp//:libomp"],
 )
