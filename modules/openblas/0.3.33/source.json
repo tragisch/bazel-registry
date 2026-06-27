@@ -8,7 +8,7 @@
         "linux"
     ],
     "overlay": {
-        "BUILD.bazel": "sha256-LeebZ1jMs7QFqzG/nIoJnZNoJpiISUPXG/jhGBcupZk=",
+        "BUILD.bazel": "sha256-Cnfz3oc5JZMxRaUNJbg3aActcUnXO2Nr33Mzt4dfz9o=",
         "bazel/BUILD.bazel": "sha256-CgmiOL1nT76Qd6G0Bg2mwakFf+tR/pyzyJOAjfO4/ME=",
         "bazel/config.h": "sha256-Z3HK1P7P3fTEZQyyxWTkyixZ+F2sspSgdoMqyrBowts=",
         "bazel/config_haswell.h": "sha256-7rIXzAXXVzGE6vLNEdym2KDLMfQPSpCdlE9Ir+ak3Kc=",
@@ -16,7 +16,7 @@
         "bazel/memory_stub.c": "sha256-nNnBWS1KvSCT8Sz2l1zwOCStQpDfAnJvZGnhKjSKWTc=",
         "bazel/openblas_cblas_smoke_test.c": "sha256-Yxc/EcK7JX+JStqgly8k48tx4/wv32m6x1+gCojiUUE=",
         "bazel/openblas_lapack_smoke_test.c": "sha256-EVGXiJ1Fl+nnZfoGo6rZD+jyrpM2jQjH3zUlwOJltuI=",
-        "bazel/openblas_rules.bzl": "sha256-n4ABC1KlXtzKvjjJmWHYMgJVqVx7mXYPfkGD8IRnf6w=",
+        "bazel/openblas_rules.bzl": "sha256-CFcoejs43iPyg47MlByciOt0n/ypGvHVtxJVYkKQAMQ=",
         "kernel/x86_64/amin.c": "sha256-ilzN92IrC7t7TxlRsODX3R4Em2GgWpgkAOlAsqCln9o=",
         "kernel/x86_64/asum.c": "sha256-Bq14hGPqJ8RKZwbS9RiyNgeaE9lqNSqBrWOCA4gVBYE=",
         "kernel/x86_64/axpy.c": "sha256-xzYBtwORcNQdP2MyCCbiqUxm/5b3xDgunELvDcLT/Cw=",
