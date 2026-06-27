@@ -16,6 +16,7 @@ typedef blasint lapack_int;
 #define LAPACK_WORK_MEMORY_ERROR -1010
 #endif
 
+/* Single precision LAPACK functions */
 int sgesv_(lapack_int *n, lapack_int *nrhs, float *a, lapack_int *lda,
 		   lapack_int *ipiv, float *b, lapack_int *ldb, lapack_int *info);
 int sgetrf_(lapack_int *m, lapack_int *n, float *a, lapack_int *lda,
@@ -25,10 +26,24 @@ int sgetri_(lapack_int *n, float *a, lapack_int *lda, lapack_int *ipiv,
 int sgeqrf_(lapack_int *m, lapack_int *n, float *a, lapack_int *lda,
 			float *tau, float *work, lapack_int *lwork, lapack_int *info);
 
+/* Double precision LAPACK functions */
+int dgesv_(lapack_int *n, lapack_int *nrhs, double *a, lapack_int *lda,
+		   lapack_int *ipiv, double *b, lapack_int *ldb, lapack_int *info);
+int dgetrf_(lapack_int *m, lapack_int *n, double *a, lapack_int *lda,
+			lapack_int *ipiv, lapack_int *info);
+int dgetri_(lapack_int *n, double *a, lapack_int *lda, lapack_int *ipiv,
+			double *work, lapack_int *lwork, lapack_int *info);
+int dgeqrf_(lapack_int *m, lapack_int *n, double *a, lapack_int *lda,
+			double *tau, double *work, lapack_int *lwork, lapack_int *info);
+
 #define LAPACK_sgesv sgesv_
 #define LAPACK_sgetrf sgetrf_
 #define LAPACK_sgetri sgetri_
 #define LAPACK_sgeqrf sgeqrf_
+#define LAPACK_dgesv dgesv_
+#define LAPACK_dgetrf dgetrf_
+#define LAPACK_dgetri dgetri_
+#define LAPACK_dgeqrf dgeqrf_
 
 lapack_int LAPACKE_sgesv(int matrix_layout, lapack_int n, lapack_int nrhs,
 						 float *a, lapack_int lda, lapack_int *ipiv,

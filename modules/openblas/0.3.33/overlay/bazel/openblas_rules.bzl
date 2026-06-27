@@ -40,6 +40,51 @@ def _openblas_object(targets, name, src, symbol, defines = []):
     )
     targets.append(":" + target_name)
 
+_HASWELL_REAL_KERNELS = {
+    "s": {
+        "axpy": "kernel/x86_64/axpy.c",
+        "scal": "kernel/x86_64/scal.c",
+        "dot": "kernel/x86_64/dot.c",
+        "asum": "kernel/x86_64/asum.c",
+        "gemv_n": "kernel/x86_64/gemv_n.c",
+        "gemv_t": "kernel/x86_64/gemv_t.c",
+        "symv_L": "kernel/x86_64/symv_L.c",
+        "symv_U": "kernel/x86_64/symv_U.c",
+    },
+    "d": {
+        "axpy": "kernel/x86_64/axpy.c",
+        "scal": "kernel/x86_64/scal.c",
+        "dot": "kernel/x86_64/dot.c",
+        "asum": "kernel/x86_64/asum.c",
+        "gemv_n": "kernel/x86_64/gemv_n.c",
+        "gemv_t": "kernel/x86_64/gemv_t.c",
+        "symv_L": "kernel/x86_64/symv_L.c",
+        "symv_U": "kernel/x86_64/symv_U.c",
+    },
+    "c": {
+        "axpy": "kernel/x86_64/zaxpy.c",
+        "axpyc": "kernel/x86_64/zaxpy.c",
+        "scal": "kernel/x86_64/zscal.c",
+        "dotu": "kernel/x86_64/zdot.c",
+        "dotc": "kernel/x86_64/zdot.c",
+        "gemv_n": "kernel/x86_64/zgemv_n.c",
+        "gemv_t": "kernel/x86_64/zgemv_t.c",
+    },
+    "z": {
+        "axpy": "kernel/x86_64/zaxpy.c",
+        "axpyc": "kernel/x86_64/zaxpy.c",
+        "scal": "kernel/x86_64/zscal.c",
+        "dotu": "kernel/x86_64/zdot.c",
+        "dotc": "kernel/x86_64/zdot.c",
+        "asum": "kernel/x86_64/zasum.c",
+        "gemv_n": "kernel/x86_64/zgemv_n.c",
+        "gemv_t": "kernel/x86_64/zgemv_t.c",
+    },
+}
+
+def _haswell_kernel(prefix, name, fallback):
+    return _HASWELL_REAL_KERNELS.get(prefix, {}).get(name, fallback)
+
 def _add_netlib_getri(targets, precision):
     prefix = precision.prefix
     _openblas_object(
@@ -79,12 +124,12 @@ def openblas_real_targets():
         struct(prefix = "d", c_type_defines = ["DOUBLE"], kernel_defines = ["DOUBLE"]),
     ]:
         for op in [
-            struct(name = "axpy", src = "interface/axpy.c", kernel_src = "kernel/arm/axpy.c"),
+            struct(name = "axpy", src = "interface/axpy.c", kernel_src = _haswell_kernel(precision.prefix, "axpy", "kernel/arm/axpy.c")),
             struct(name = "copy", src = "interface/copy.c", kernel_src = "kernel/arm/copy.c"),
             struct(name = "swap", src = "interface/swap.c", kernel_src = "kernel/arm/swap.c"),
-            struct(name = "scal", src = "interface/scal.c", kernel_src = "kernel/arm/scal.c"),
-            struct(name = "dot", src = "interface/dot.c", kernel_src = "kernel/arm/dot.c"),
-            struct(name = "asum", src = "interface/asum.c", kernel_src = "kernel/arm/asum.c"),
+            struct(name = "scal", src = "interface/scal.c", kernel_src = _haswell_kernel(precision.prefix, "scal", "kernel/arm/scal.c")),
+            struct(name = "dot", src = "interface/dot.c", kernel_src = _haswell_kernel(precision.prefix, "dot", "kernel/arm/dot.c")),
+            struct(name = "asum", src = "interface/asum.c", kernel_src = _haswell_kernel(precision.prefix, "asum", "kernel/arm/asum.c")),
             struct(name = "nrm2", src = "interface/nrm2.c", kernel_src = "kernel/arm/nrm2.c"),
         ]:
             _openblas_object(
@@ -363,14 +408,14 @@ def openblas_real_targets():
         _openblas_object(
             targets = targets,
             name = "%sgemv_n_kernel" % precision.prefix,
-            src = "kernel/arm/gemv_n.c",
+            src = _haswell_kernel(precision.prefix, "gemv_n", "kernel/arm/gemv_n.c"),
             defines = precision.kernel_defines,
             symbol = "%sgemv_n" % precision.prefix,
         )
         _openblas_object(
             targets = targets,
             name = "%sgemv_t_kernel" % precision.prefix,
-            src = "kernel/arm/gemv_t.c",
+            src = _haswell_kernel(precision.prefix, "gemv_t", "kernel/arm/gemv_t.c"),
             defines = precision.kernel_defines,
             symbol = "%sgemv_t" % precision.prefix,
         )
@@ -398,14 +443,14 @@ def openblas_real_targets():
         _openblas_object(
             targets = targets,
             name = "%ssymv_u_kernel" % precision.prefix,
-            src = "kernel/arm/symv_U.c",
+            src = _haswell_kernel(precision.prefix, "symv_U", "kernel/arm/symv_U.c"),
             defines = precision.kernel_defines,
             symbol = "%ssymv_U" % precision.prefix,
         )
         _openblas_object(
             targets = targets,
             name = "%ssymv_l_kernel" % precision.prefix,
-            src = "kernel/arm/symv_L.c",
+            src = _haswell_kernel(precision.prefix, "symv_L", "kernel/arm/symv_L.c"),
             defines = precision.kernel_defines,
             symbol = "%ssymv_L" % precision.prefix,
         )
@@ -751,11 +796,11 @@ def openblas_real_targets():
         struct(prefix = "z", real_prefix = "d", index_prefix = "iz", c_type_defines = ["COMPLEX", "DOUBLE"], kernel_defines = ["COMPLEX", "DOUBLE"]),
     ]:
         for op in [
-            struct(name = "axpy", src = "interface/zaxpy.c", kernel_src = "kernel/x86_64/zaxpy.c", extra_defines = []),
-            struct(name = "axpyc", src = "interface/zaxpy.c", kernel_src = "kernel/x86_64/zaxpy.c", extra_defines = ["CONJ"]),
+            struct(name = "axpy", src = "interface/zaxpy.c", kernel_src = _haswell_kernel(precision.prefix, "axpy", "kernel/x86_64/zaxpy.c"), extra_defines = []),
+            struct(name = "axpyc", src = "interface/zaxpy.c", kernel_src = _haswell_kernel(precision.prefix, "axpyc", "kernel/x86_64/zaxpy.c"), extra_defines = ["CONJ"]),
             struct(name = "copy", src = "interface/copy.c", kernel_src = "kernel/arm/zcopy.c", extra_defines = []),
             struct(name = "swap", src = "interface/zswap.c", kernel_src = "kernel/arm/zswap.c", extra_defines = []),
-            struct(name = "scal", src = "interface/zscal.c", kernel_src = "kernel/x86_64/zscal.c", extra_defines = []),
+            struct(name = "scal", src = "interface/zscal.c", kernel_src = _haswell_kernel(precision.prefix, "scal", "kernel/x86_64/zscal.c"), extra_defines = []),
         ]:
             _openblas_object(
                 targets = targets,
@@ -808,7 +853,7 @@ def openblas_real_targets():
             _openblas_object(
                 targets = targets,
                 name = "%s%s_kernel" % (precision.prefix, dot.name),
-                src = "kernel/x86_64/zdot.c",
+                src = _haswell_kernel(precision.prefix, dot.name, "kernel/x86_64/zdot.c"),
                 defines = precision.kernel_defines + dot.extra_defines,
                 symbol = "%s%s_k" % (precision.prefix, dot.name),
             )
@@ -1031,14 +1076,14 @@ def openblas_real_targets():
             symbol = "%sgemv" % precision.prefix,
         )
         for gemv_variant in [
-            struct(suffix = "n", src = "kernel/arm/zgemv_n.c", defines = []),
-            struct(suffix = "t", src = "kernel/arm/zgemv_t.c", defines = ["TRANS"]),
-            struct(suffix = "r", src = "kernel/arm/zgemv_n.c", defines = ["CONJ"]),
-            struct(suffix = "c", src = "kernel/arm/zgemv_t.c", defines = ["TRANS", "CONJ"]),
-            struct(suffix = "o", src = "kernel/arm/zgemv_n.c", defines = ["XCONJ"]),
-            struct(suffix = "u", src = "kernel/arm/zgemv_t.c", defines = ["TRANS", "XCONJ"]),
-            struct(suffix = "s", src = "kernel/arm/zgemv_n.c", defines = ["CONJ", "XCONJ"]),
-            struct(suffix = "d", src = "kernel/arm/zgemv_t.c", defines = ["TRANS", "CONJ", "XCONJ"]),
+            struct(suffix = "n", src = _haswell_kernel(precision.prefix, "gemv_n", "kernel/arm/zgemv_n.c"), defines = []),
+            struct(suffix = "t", src = _haswell_kernel(precision.prefix, "gemv_t", "kernel/arm/zgemv_t.c"), defines = ["TRANS"]),
+            struct(suffix = "r", src = _haswell_kernel(precision.prefix, "gemv_n", "kernel/arm/zgemv_n.c"), defines = ["CONJ"]),
+            struct(suffix = "c", src = _haswell_kernel(precision.prefix, "gemv_t", "kernel/arm/zgemv_t.c"), defines = ["TRANS", "CONJ"]),
+            struct(suffix = "o", src = _haswell_kernel(precision.prefix, "gemv_n", "kernel/arm/zgemv_n.c"), defines = ["XCONJ"]),
+            struct(suffix = "u", src = _haswell_kernel(precision.prefix, "gemv_t", "kernel/arm/zgemv_t.c"), defines = ["TRANS", "XCONJ"]),
+            struct(suffix = "s", src = _haswell_kernel(precision.prefix, "gemv_n", "kernel/arm/zgemv_n.c"), defines = ["CONJ", "XCONJ"]),
+            struct(suffix = "d", src = _haswell_kernel(precision.prefix, "gemv_t", "kernel/arm/zgemv_t.c"), defines = ["TRANS", "CONJ", "XCONJ"]),
         ]:
             _openblas_object(
                 targets = targets,

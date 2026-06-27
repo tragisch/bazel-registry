@@ -4,17 +4,43 @@ load("//bazel:openblas_rules.bzl", "openblas_real_targets")
 
 package(default_visibility = ["//visibility:public"])
 
-OPENBLAS_COMMON_COPTS = [
-    "-DOPENBLAS_BAZEL",
-    "-DNO_LAPACKE",
-    "-DNO_AFFINITY",
-    "-fopenmp",
-    "-Wno-unused-function",
-]
+config_setting(
+    name = "profile_haswell",
+    values = {"define": "OPENBLAS_PROFILE=haswell"},
+)
+
+# Generic/default profile
+config_setting(
+    name = "profile_generic",
+    values = {"define": "OPENBLAS_PROFILE=generic"},
+)
+
+# Common copts vary slightly per profile; haswell profile adds a marker macro
+OPENBLAS_COMMON_COPTS = select({
+    ":profile_haswell": [
+        "-DOPENBLAS_PROFILE_HASWELL",
+        "-DOPENBLAS_BAZEL",
+        "-DNO_LAPACKE",
+        "-DNO_AFFINITY",
+        "-mavx2",
+        "-mfma",
+        "-fopenmp",
+        "-Wno-unused-function",
+    ],
+    "//conditions:default": [
+        "-DOPENBLAS_BAZEL",
+        "-DNO_LAPACKE",
+        "-DNO_AFFINITY",
+        "-fopenmp",
+        "-Wno-unused-function",
+    ],
+})
 
 OPENBLAS_COMMON_INCLUDES = [
+    "bazel",
     "driver/level3",
     "kernel/generic",
+    "kernel/x86_64",
     "lapack/laswp/generic",
 ]
 
@@ -23,6 +49,7 @@ OPENBLAS_COMMON_HDRS = glob(["common*.h"]) + [
     "l1param.h",
     "param.h",
     "symcopy.h",
+    "//bazel:config_haswell.h",
 ]
 
 OPENBLAS_INCLUDED_C_FRAGMENTS = [
@@ -32,6 +59,61 @@ OPENBLAS_INCLUDED_C_FRAGMENTS = [
     "driver/level3/level3_thread.c",
     "driver/level3/level3_syrk_threaded.c",
     "kernel/generic/conversion_macros.h",
+    "kernel/arm/asum.c",
+    "kernel/arm/axpy.c",
+    "kernel/arm/dot.c",
+    "kernel/arm/gemv_n.c",
+    "kernel/arm/gemv_t.c",
+    "kernel/arm/scal.c",
+    "kernel/arm/symv_L.c",
+    "kernel/arm/symv_U.c",
+    "kernel/arm/zgemv_n.c",
+    "kernel/arm/zgemv_t.c",
+    "kernel/x86_64/cgemv_n_4.c",
+    "kernel/x86_64/cgemv_n_microk_haswell-4.c",
+    "kernel/x86_64/cgemv_t_4.c",
+    "kernel/x86_64/cgemv_t_microk_haswell-4.c",
+    "kernel/x86_64/dasum.c",
+    "kernel/x86_64/dasum_microk_haswell-2.c",
+    "kernel/x86_64/daxpy.c",
+    "kernel/x86_64/daxpy_microk_haswell-2.c",
+    "kernel/x86_64/ddot.c",
+    "kernel/x86_64/ddot_microk_haswell-2.c",
+    "kernel/x86_64/dgemv_n_4.c",
+    "kernel/x86_64/dgemv_n_microk_haswell-4.c",
+    "kernel/x86_64/dgemv_t_4.c",
+    "kernel/x86_64/dgemv_t_microk_haswell-4.c",
+    "kernel/x86_64/dscal.c",
+    "kernel/x86_64/dscal_microk_haswell-2.c",
+    "kernel/x86_64/dsymv_L.c",
+    "kernel/x86_64/dsymv_L_microk_haswell-2.c",
+    "kernel/x86_64/dsymv_U.c",
+    "kernel/x86_64/dsymv_U_microk_haswell-2.c",
+    "kernel/x86_64/sasum.c",
+    "kernel/x86_64/sasum_microk_haswell-2.c",
+    "kernel/x86_64/saxpy.c",
+    "kernel/x86_64/saxpy_microk_haswell-2.c",
+    "kernel/x86_64/sdot.c",
+    "kernel/x86_64/sdot_microk_haswell-2.c",
+    "kernel/x86_64/sgemv_n_4.c",
+    "kernel/x86_64/sgemv_n_microk_haswell-4.c",
+    "kernel/x86_64/sgemv_t_4.c",
+    "kernel/x86_64/sgemv_t_microk_haswell-4.c",
+    "kernel/x86_64/sscal.c",
+    "kernel/x86_64/sscal_microk_haswell-2.c",
+    "kernel/x86_64/ssymv_L.c",
+    "kernel/x86_64/ssymv_L_microk_haswell-2.c",
+    "kernel/x86_64/ssymv_U.c",
+    "kernel/x86_64/ssymv_U_microk_haswell-2.c",
+    "kernel/x86_64/zasum.c",
+    "kernel/x86_64/zasum_microk_skylakex-2.c",
+    "kernel/x86_64/zgemv_n_4.c",
+    "kernel/x86_64/zaxpy_microk_haswell-2.c",
+    "kernel/x86_64/zdot_microk_haswell-2.c",
+    "kernel/x86_64/zgemv_n_microk_haswell-4.c",
+    "kernel/x86_64/zgemv_t_4.c",
+    "kernel/x86_64/zgemv_t_microk_haswell-4.c",
+    "kernel/x86_64/zscal_microk_haswell-2.c",
     "lapack/laswp/generic/laswp_k_1.c",
     "lapack/laswp/generic/laswp_k_2.c",
     "lapack/laswp/generic/laswp_k_4.c",
@@ -52,7 +134,687 @@ cc_library(
         "NO_LAPACKE",
     ],
     includes = ["."] + OPENBLAS_COMMON_INCLUDES,
-    deps = ["@openmp//:libomp"],
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_gemv_thread_n",
+    srcs = ["driver/level2/gemv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=sgemv_thread_n"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sgemm_thread_nn",
+    srcs = ["driver/level3/gemm.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DNN", "-DCNAME=sgemm_thread_nn"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sgemm_thread_nt",
+    srcs = ["driver/level3/gemm.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DNT", "-DCNAME=sgemm_thread_nt"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sgemm_thread_tn",
+    srcs = ["driver/level3/gemm.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DTN", "-DCNAME=sgemm_thread_tn"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sgemm_thread_tt",
+    srcs = ["driver/level3/gemm.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DTT", "-DCNAME=sgemm_thread_tt"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_dgemm_thread_nn",
+    srcs = ["driver/level3/gemm.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DDOUBLE", "-DTHREADED_LEVEL3", "-DNN", "-DCNAME=dgemm_thread_nn"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_dgemm_thread_nt",
+    srcs = ["driver/level3/gemm.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DDOUBLE", "-DTHREADED_LEVEL3", "-DNT", "-DCNAME=dgemm_thread_nt"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_dgemm_thread_tn",
+    srcs = ["driver/level3/gemm.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DDOUBLE", "-DTHREADED_LEVEL3", "-DTN", "-DCNAME=dgemm_thread_tn"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_dgemm_thread_tt",
+    srcs = ["driver/level3/gemm.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DDOUBLE", "-DTHREADED_LEVEL3", "-DTT", "-DCNAME=dgemm_thread_tt"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssymm_thread_lu",
+    srcs = ["driver/level3/symm_k.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DNN", "-DCNAME=ssymm_thread_LU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssymm_thread_ll",
+    srcs = ["driver/level3/symm_k.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DLOWER", "-DNN", "-DCNAME=ssymm_thread_LL"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssymm_thread_ru",
+    srcs = ["driver/level3/symm_k.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DRSIDE", "-DNN", "-DCNAME=ssymm_thread_RU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssymm_thread_rl",
+    srcs = ["driver/level3/symm_k.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_thread.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DRSIDE", "-DLOWER", "-DNN", "-DCNAME=ssymm_thread_RL"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssyrk_thread_un",
+    srcs = ["driver/level3/syrk_k.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_syrk_threaded.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DCNAME=ssyrk_thread_UN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssyrk_thread_ut",
+    srcs = ["driver/level3/syrk_k.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_syrk_threaded.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DTRANS", "-DCNAME=ssyrk_thread_UT"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssyrk_thread_ln",
+    srcs = ["driver/level3/syrk_k.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_syrk_threaded.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DLOWER", "-DCNAME=ssyrk_thread_LN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssyrk_thread_lt",
+    srcs = ["driver/level3/syrk_k.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    textual_hdrs = [
+        "driver/level3/level3_syrk_threaded.c",
+    ],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTHREADED_LEVEL3", "-DLOWER", "-DTRANS", "-DCNAME=ssyrk_thread_LT"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_strmv_thread_nuu",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DUNIT", "-DCNAME=strmv_thread_NUU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_strmv_thread_nun",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DCNAME=strmv_thread_NUN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_strmv_thread_nlu",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DUNIT", "-DCNAME=strmv_thread_NLU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_strmv_thread_nln",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DCNAME=strmv_thread_NLN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_strmv_thread_tuu",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DUNIT", "-DCNAME=strmv_thread_TUU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_strmv_thread_tun",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DCNAME=strmv_thread_TUN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_strmv_thread_tlu",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DLOWER", "-DUNIT", "-DCNAME=strmv_thread_TLU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_strmv_thread_tln",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DLOWER", "-DCNAME=strmv_thread_TLN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stpmv_thread_nuu",
+    srcs = ["driver/level2/tpmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DUNIT", "-DCNAME=stpmv_thread_NUU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stpmv_thread_nun",
+    srcs = ["driver/level2/tpmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DCNAME=stpmv_thread_NUN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stpmv_thread_nlu",
+    srcs = ["driver/level2/tpmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DUNIT", "-DCNAME=stpmv_thread_NLU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stpmv_thread_nln",
+    srcs = ["driver/level2/tpmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DCNAME=stpmv_thread_NLN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stpmv_thread_tuu",
+    srcs = ["driver/level2/tpmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DUNIT", "-DCNAME=stpmv_thread_TUU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stpmv_thread_tun",
+    srcs = ["driver/level2/tpmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DCNAME=stpmv_thread_TUN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stpmv_thread_tlu",
+    srcs = ["driver/level2/tpmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DLOWER", "-DUNIT", "-DCNAME=stpmv_thread_TLU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stpmv_thread_tln",
+    srcs = ["driver/level2/tpmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DLOWER", "-DCNAME=stpmv_thread_TLN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_gemv_thread_t",
+    srcs = ["driver/level2/gemv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTRANSA", "-DCNAME=sgemv_thread_t"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sgbmv_thread_n",
+    srcs = ["driver/level2/gbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=sgbmv_thread_n"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sgbmv_thread_t",
+    srcs = ["driver/level2/gbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DTRANSA", "-DCNAME=sgbmv_thread_t"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssyr_thread_u",
+    srcs = ["driver/level2/syr_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=ssyr_thread_U"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssyr_thread_l",
+    srcs = ["driver/level2/syr_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DCNAME=ssyr_thread_L"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssyr2_thread_u",
+    srcs = ["driver/level2/syr2_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=ssyr2_thread_U"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ssyr2_thread_l",
+    srcs = ["driver/level2/syr2_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DCNAME=ssyr2_thread_L"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sspr_thread_u",
+    srcs = ["driver/level2/spr_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=sspr_thread_U"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sspr_thread_l",
+    srcs = ["driver/level2/spr_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DCNAME=sspr_thread_L"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sspr2_thread_u",
+    srcs = ["driver/level2/spr2_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=sspr2_thread_U"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_sspr2_thread_l",
+    srcs = ["driver/level2/spr2_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DCNAME=sspr2_thread_L"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stbmv_thread_nuu",
+    srcs = ["driver/level2/tbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DUNIT", "-DCNAME=stbmv_thread_NUU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stbmv_thread_nun",
+    srcs = ["driver/level2/tbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-UUNIT", "-DCNAME=stbmv_thread_NUN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stbmv_thread_nlu",
+    srcs = ["driver/level2/tbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DUNIT", "-DCNAME=stbmv_thread_NLU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stbmv_thread_nln",
+    srcs = ["driver/level2/tbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-UUNIT", "-DCNAME=stbmv_thread_NLN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stbmv_thread_tuu",
+    srcs = ["driver/level2/tbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-DUNIT", "-DCNAME=stbmv_thread_TUU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stbmv_thread_tun",
+    srcs = ["driver/level2/tbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DTRANSA", "-UUNIT", "-DCNAME=stbmv_thread_TUN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stbmv_thread_tlu",
+    srcs = ["driver/level2/tbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DTRANSA", "-DUNIT", "-DCNAME=stbmv_thread_TLU"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_stbmv_thread_tln",
+    srcs = ["driver/level2/tbmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DTRANSA", "-UUNIT", "-DCNAME=stbmv_thread_TLN"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_getrf_parallel",
+    srcs = ["lapack/getrf/getrf_parallel.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=sgetrf_parallel"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_getrs_n_parallel",
+    srcs = ["lapack/getrs/getrs_parallel.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=sgetrs_N_parallel"],
+    defines = ["OPENBLAS_BAZEL", "NO_AFFINITY", "NO_LAPACKE"],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_ger_thread",
+    srcs = ["driver/level2/ger_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=sger_thread"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_symv_thread_u",
+    srcs = ["driver/level2/symv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DCNAME=ssymv_thread_U"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_symv_thread_l",
+    srcs = ["driver/level2/symv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DLOWER", "-DCNAME=ssymv_thread_L"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_trmv_thread_nuu",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-I.", "-DUNIT", "-DCNAME=strmv_thread_NUU"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_trmv_thread_nun",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DCNAME=strmv_thread_NUN"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
+)
+
+cc_library(
+    name = "openblas_trmv_thread_nlu",
+    srcs = ["driver/level2/trmv_thread.c"],
+    hdrs = OPENBLAS_COMMON_HDRS + ["//bazel:config.h"],
+    copts = OPENBLAS_COMMON_COPTS + ["-DLOWER", "-DUNIT", "-DCNAME=strmv_thread_NLU"],
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    deps = ["@openmp//:openmp"],
 )
 
 cc_library(
@@ -66,7 +828,7 @@ cc_library(
         "NO_LAPACKE",
     ],
     includes = ["."] + OPENBLAS_COMMON_INCLUDES,
-    deps = ["@openmp//:libomp"],
+    deps = ["@openmp//:openmp"],
 )
 
 cc_library(
@@ -80,7 +842,7 @@ cc_library(
         "NO_LAPACKE",
     ],
     includes = ["."] + OPENBLAS_COMMON_INCLUDES,
-    deps = ["@openmp//:libomp"],
+    deps = ["@openmp//:openmp"],
 )
 
 cc_library(
@@ -94,7 +856,7 @@ cc_library(
         "NO_LAPACKE",
     ],
     includes = ["."] + OPENBLAS_COMMON_INCLUDES,
-    deps = ["@openmp//:libomp"],
+    deps = ["@openmp//:openmp"],
 )
 
 cc_library(
@@ -108,7 +870,7 @@ cc_library(
         "NO_LAPACKE",
     ],
     includes = ["."] + OPENBLAS_COMMON_INCLUDES,
-    deps = ["@openmp//:libomp"],
+    deps = ["@openmp//:openmp"],
 )
 
 cc_library(
@@ -122,12 +884,13 @@ cc_library(
         "NO_LAPACKE",
     ],
     includes = ["."] + OPENBLAS_COMMON_INCLUDES,
-    deps = ["@openmp//:libomp"],
+    deps = ["@openmp//:openmp"],
 )
 
 cc_library(
     name = "openblas",
     srcs = openblas_real_targets() + [
+        "driver/others/divtable.c",
         "driver/others/blas_server_callback.c",
         "driver/others/blas_server_omp.c",
         "driver/others/openblas_env.c",
@@ -146,14 +909,133 @@ cc_library(
     ],
     includes = ["."] + OPENBLAS_COMMON_INCLUDES,
     linkopts = ["-lm"],
+    alwayslink = True,
     deps = [
-        "@openmp//:libomp",
+        "@openmp//:openmp",
         ":openblas_blas_l1_thread",
+        ":openblas_gemv_thread_n",
+        ":openblas_gemv_thread_t",
+        ":openblas_ger_thread",
+        ":openblas_sgbmv_thread_n",
+        ":openblas_sgbmv_thread_t",
+        ":openblas_ssyr_thread_u",
+        ":openblas_ssyr_thread_l",
+        ":openblas_ssyr2_thread_u",
+        ":openblas_ssyr2_thread_l",
+        ":openblas_sspr_thread_u",
+        ":openblas_sspr_thread_l",
+        ":openblas_sspr2_thread_u",
+        ":openblas_sspr2_thread_l",
+        ":openblas_sgemm_thread_nn",
+        ":openblas_sgemm_thread_nt",
+        ":openblas_sgemm_thread_tn",
+        ":openblas_sgemm_thread_tt",
+        ":openblas_dgemm_thread_nn",
+        ":openblas_dgemm_thread_nt",
+        ":openblas_dgemm_thread_tn",
+        ":openblas_dgemm_thread_tt",
+        ":openblas_ssymm_thread_lu",
+        ":openblas_ssymm_thread_ll",
+        ":openblas_ssymm_thread_ru",
+        ":openblas_ssymm_thread_rl",
+        ":openblas_ssyrk_thread_un",
+        ":openblas_ssyrk_thread_ut",
+        ":openblas_ssyrk_thread_ln",
+        ":openblas_ssyrk_thread_lt",
         ":openblas_gemm_thread_m",
         ":openblas_gemm_thread_n",
         ":openblas_gemm_thread_mn",
         ":openblas_gemm_thread_variable",
+        ":openblas_symv_thread_u",
+        ":openblas_symv_thread_l",
+        ":openblas_trmv_thread_nuu",
+        ":openblas_trmv_thread_nun",
+        ":openblas_trmv_thread_nlu",
+        ":openblas_strmv_thread_nln",
+        ":openblas_strmv_thread_tuu",
+        ":openblas_strmv_thread_tun",
+        ":openblas_strmv_thread_tlu",
+        ":openblas_strmv_thread_tln",
+        ":openblas_stpmv_thread_nuu",
+        ":openblas_stpmv_thread_nun",
+        ":openblas_stpmv_thread_nlu",
+        ":openblas_stpmv_thread_nln",
+        ":openblas_stpmv_thread_tuu",
+        ":openblas_stpmv_thread_tun",
+        ":openblas_stpmv_thread_tlu",
+        ":openblas_stpmv_thread_tln",
+        ":openblas_stbmv_thread_nuu",
+        ":openblas_stbmv_thread_nun",
+        ":openblas_stbmv_thread_nlu",
+        ":openblas_stbmv_thread_nln",
+        ":openblas_stbmv_thread_tuu",
+        ":openblas_stbmv_thread_tun",
+        ":openblas_stbmv_thread_tlu",
+        ":openblas_stbmv_thread_tln",
+        ":openblas_getrf_parallel",
+        ":openblas_getrs_n_parallel",
         ":openblas_syrk_thread",
+    ],
+)
+
+cc_library(
+    name = "openblas_bench",
+    srcs = [
+        ":xerbla_src",
+        ":parameter_src",
+        ":cblas_sgemm_src",
+        ":sgemm_src",
+        ":sgemm_nn_src",
+        ":sgemm_nt_src",
+        ":sgemm_tn_src",
+        ":sgemm_tt_src",
+        ":sgemm_kernel_src",
+        ":sgemm_beta_src",
+        ":sgemm_oncopy_src",
+        ":sgemm_otcopy_src",
+        ":cblas_dgemm_src",
+        ":dgemm_src",
+        ":dgemm_nn_src",
+        ":dgemm_nt_src",
+        ":dgemm_tn_src",
+        ":dgemm_tt_src",
+        ":dgemm_kernel_src",
+        ":dgemm_beta_src",
+        ":dgemm_oncopy_src",
+        ":dgemm_otcopy_src",
+        "driver/others/divtable.c",
+        "driver/others/blas_server_callback.c",
+        "driver/others/blas_server_omp.c",
+        "driver/others/openblas_env.c",
+        "//bazel:memory_stub.c",
+    ],
+    hdrs = OPENBLAS_COMMON_HDRS + [
+        "//bazel:config.h",
+    ],
+    textual_hdrs = OPENBLAS_INCLUDED_C_FRAGMENTS,
+    copts = OPENBLAS_COMMON_COPTS,
+    defines = [
+        "OPENBLAS_BAZEL",
+        "NO_AFFINITY",
+        "NO_LAPACKE",
+    ],
+    includes = ["."] + OPENBLAS_COMMON_INCLUDES,
+    linkopts = ["-lm"],
+    alwayslink = True,
+    deps = [
+        "@openmp//:openmp",
+        ":openblas_sgemm_thread_nn",
+        ":openblas_sgemm_thread_nt",
+        ":openblas_sgemm_thread_tn",
+        ":openblas_sgemm_thread_tt",
+        ":openblas_dgemm_thread_nn",
+        ":openblas_dgemm_thread_nt",
+        ":openblas_dgemm_thread_tn",
+        ":openblas_dgemm_thread_tt",
+        ":openblas_gemm_thread_m",
+        ":openblas_gemm_thread_n",
+        ":openblas_gemm_thread_mn",
+        ":openblas_gemm_thread_variable",
     ],
 )
 

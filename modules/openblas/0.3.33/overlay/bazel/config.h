@@ -1,6 +1,15 @@
 #ifndef OPENBLAS_BAZEL_CONFIG_H
 #define OPENBLAS_BAZEL_CONFIG_H
 
+/*
+ * Wrapper config header: includes a profile-specific config when
+ * building with -DOPENBLAS_PROFILE_HASWELL, otherwise falls back to
+ * the original generic configuration.
+ */
+
+#if defined(OPENBLAS_PROFILE_HASWELL)
+#include "config_haswell.h"
+#else
 #if defined(__APPLE__)
 #define OS_DARWIN 1
 #elif defined(_WIN32)
@@ -52,9 +61,12 @@
 #define GEMM_MULTITHREAD_THRESHOLD 4
 
 #define USE_OPENMP 1
+#define SMP
 #define SMP_SERVER 1
 
 #define MAX_CPU_NUMBER 64
 #define MAX_PARALLEL_NUMBER 4
 
-#endif
+#endif /* OPENBLAS_PROFILE_HASWELL */
+
+#endif /* OPENBLAS_BAZEL_CONFIG_H */

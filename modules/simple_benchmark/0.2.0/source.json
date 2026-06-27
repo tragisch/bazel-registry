@@ -1,0 +1,10 @@
+{
+    "name": "simple_benchmark",
+    "url": "https://github.com/tragisch/Simple-Benchmark-C-Header/archive/refs/tags/v0.2.0.tar.gz",
+    "integrity": "sha256-oKGtDFUofSHDstmyJSjWMhspeWyOKGG8N7gxoMohWuU=",
+    "strip_prefix": "Simple-Benchmark-C-Header-0.2.0",
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-eVEb20hoo3USBVSFsOCHUodbWt7+AFRPtJEm9N9tEmw="
+    }
+}

@@ -1,5 +1,6 @@
 exports_files([
     "config.h",
+    "config_haswell.h",
     "lapack_ilaenv_stub.c",
     "memory_stub.c",
     "openblas_cblas_smoke_test.c",

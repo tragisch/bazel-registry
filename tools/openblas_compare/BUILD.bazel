@@ -1,0 +1,31 @@
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+COMMON_COPTS = [
+    "-O3",
+    "-DNDEBUG",
+]
+
+cc_binary(
+    name = "registry_bench",
+    srcs = ["blas_bench.c"],
+    copts = COMMON_COPTS,
+    defines = ["BLAS_PROVIDER=\\\"registry\\\""],
+    deps = [
+        "@openblas//:openblas_bench",
+        "@simple_benchmark//:simple_bench",
+    ],
+)
+
+cc_binary(
+    name = "homebrew_bench",
+    srcs = ["blas_bench.c"],
+    copts = COMMON_COPTS,
+    defines = ["BLAS_PROVIDER=\\\"homebrew\\\""],
+    linkstatic = False,
+    deps = [
+        "@homebrew_openblas//:openblas",
+        "@simple_benchmark//:simple_bench",
+    ],
+)

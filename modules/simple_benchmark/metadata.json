@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/tragisch/Simple-Benchmark-C-Header",
+    "description": "Simple single-header benchmarking helpers for C.",
+    "repository": [
+        "github:tragisch/Simple-Benchmark-C-Header"
+    ],
+    "versions": [
+        "0.2.0"
+    ],
+    "yanked_versions": {}
+}

@@ -1,0 +1,15 @@
+module(
+    name = "openblas_compare",
+    version = "0.0.1",
+)
+
+bazel_dep(name = "openblas", version = "0.3.33")
+bazel_dep(name = "rules_cc", version = "0.2.17")
+bazel_dep(name = "simple_benchmark", version = "0.2.0")
+
+homebrew_openblas_repository = use_repo_rule(
+    "//:homebrew_openblas_repo.bzl",
+    "homebrew_openblas_repository",
+)
+
+homebrew_openblas_repository(name = "homebrew_openblas")

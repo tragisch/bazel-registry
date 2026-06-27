@@ -14,6 +14,6 @@
         "bazel/lapack_blas_shims.c": "sha256-58Tnb83rzYqKVl1BPPvU+9fu4ZAsAEjGMYK08igiu1c=",
         "bazel/lapacke_sgesv.c": "sha256-pQMa00cGq9d2XA814PL+MpIsboeG0Wjv4b9k+B6l2m4=",
         "bazel/openblas_lapack_smoke_test.c": "sha256-s3vR+0JClT4L8IDReSJfhrk/4sW0PWCF1K2uhGoPioU=",
-        "bazel/lapacke.h": "sha256-NUVqbo2tQ8JNQhRDinaRTcPQtvU1s90bakze6AK3MiI="
+        "bazel/lapacke.h": "sha256-xyQJ8tvYDv1mTqf9/7IUGJya9+jCilHWfa2sc4VhcEc="
     }
 }
