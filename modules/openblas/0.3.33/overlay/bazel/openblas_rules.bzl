@@ -231,8 +231,8 @@ def openblas_real_targets():
                 struct(name = "gemm_beta", src = "kernel/x86_64/sgemm_beta_skylakex.c", symbol = "gemm_beta"),
                 struct(name = "gemm_oncopy", src = "kernel/x86_64/sgemm_ncopy_4_skylakex.c", symbol = "gemm_oncopy"),
                 struct(name = "gemm_otcopy", src = "kernel/generic/gemm_tcopy_4.c", symbol = "gemm_otcopy"),
-                struct(name = "gemm_incopy", src = "kernel/x86_64/sgemm_ncopy_4_skylakex.c", symbol = "gemm_incopy"),
-                struct(name = "gemm_itcopy", src = "kernel/generic/gemm_tcopy_4.c", symbol = "gemm_itcopy"),
+                struct(name = "gemm_incopy", src = "kernel/generic/gemm_ncopy_8.c", symbol = "gemm_incopy"),
+                struct(name = "gemm_itcopy", src = "kernel/generic/gemm_tcopy_8.c", symbol = "gemm_itcopy"),
             ]
         elif precision.prefix == "d":
             gemm_kernels = [
