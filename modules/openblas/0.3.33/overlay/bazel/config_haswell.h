@@ -47,6 +47,19 @@
 #define MAX_PARALLEL_NUMBER 56
 #define GEMM_MULTITHREAD_THRESHOLD 1
 
+/* CPU feature flags (required by kernel dispatch code) */
+#define HAVE_CMOV 1
+#define HAVE_MMX 1
+#define HAVE_SSE 1
+#define HAVE_SSE2 1
+#define HAVE_SSE3 1
+#define HAVE_SSSE3 1
+#define HAVE_SSE4_1 1
+#define HAVE_SSE4_2 1
+#define HAVE_AVX 1
+#define HAVE_AVX2 1
+#define HAVE_FMA3 1
+
 /* GEMM parameters from param.h HASWELL block */
 #define SNUMOPT 16
 #define DNUMOPT 8
@@ -57,23 +70,25 @@
 /* GEMM unrolling parameters for x86_64 (not ARCH_X86) */
 #define SGEMM_DEFAULT_UNROLL_M 8
 #define SGEMM_DEFAULT_UNROLL_N 4
+#define SGEMM_DEFAULT_UNROLL_MN 32
 #define DGEMM_DEFAULT_UNROLL_M 4
 #define DGEMM_DEFAULT_UNROLL_N 8
+#define DGEMM_DEFAULT_UNROLL_MN 32
 
-/* GEMM blocking parameters for x86_64 (not ARCH_X86) */
-#define SGEMM_DEFAULT_P 320
-#define SGEMM_DEFAULT_Q 320
+/* GEMM blocking parameters for x86_64 — match param.h HASWELL values */
+#define SGEMM_DEFAULT_P 512
+#define SGEMM_DEFAULT_Q 256
 #define SGEMM_DEFAULT_R sgemm_r
 #define DGEMM_DEFAULT_P 512
 #define DGEMM_DEFAULT_Q 256
-#define DGEMM_DEFAULT_R 13824
+#define DGEMM_DEFAULT_R dgemm_r
 
 /* Cache sizes (typical x86_64 values) */
 #define L1_DATA_SIZE 32768
 #define L1_DATA_LINESIZE 64
-#define L2_SIZE 524288
+#define L2_SIZE 262144
 #define L2_LINESIZE 64
-#define DTB_DEFAULT_ENTRIES 128
+#define DTB_DEFAULT_ENTRIES 64
 #define DTB_SIZE 4096
 #define L2_ASSOCIATIVE 8
 
