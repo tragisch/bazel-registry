@@ -1,0 +1,57 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "headers",
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/sparse",
+    ],
+)
+
+cc_library(
+    name = "sfdpgen",
+    srcs = [
+        "Multilevel.c",
+        "post_process.c",
+        "sfdpinit.c",
+        "sparse_solve.c",
+        "spring_electrical.c",
+        "stress_model.c",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+        "../cdt",
+        "../cgraph",
+        "../common",
+        "../gvc",
+        "../pack",
+        "../pathplan",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    linkstatic = True,
+    local_defines = ["NEATOGEN_EXPORTS=1"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":headers",
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/common:headers",
+        "//lib/gvc",
+        "//lib/neatogen",
+        "//lib/pack",
+        "//lib/pathplan",
+        "//lib/sparse",
+        "//lib/util",
+    ],
+)

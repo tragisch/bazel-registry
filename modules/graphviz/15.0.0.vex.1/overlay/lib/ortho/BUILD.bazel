@@ -1,0 +1,43 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "ortho",
+    srcs = [
+        "fPQ.c",
+        "maze.c",
+        "ortho.c",
+        "partition.c",
+        "rawgraph.c",
+        "sgraph.c",
+        "trapezoid.c",
+    ],
+    hdrs = glob(["*.h"]),
+    # Some sources define DEBUG themselves. Avoid redefining it in Apple fastbuild.
+    copts = ["-UDEBUG"],
+    includes = [
+        ".",
+        "..",
+        "../cdt",
+        "../cgraph",
+        "../common",
+        "../gvc",
+        "../pack",
+        "../pathplan",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    linkstatic = True,
+    local_defines = ["GVC_EXPORTS"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/common:headers",
+        "//lib/gvc:headers",
+        "//lib/pack",
+        "//lib/pathplan",
+        "//lib/util",
+    ],
+)

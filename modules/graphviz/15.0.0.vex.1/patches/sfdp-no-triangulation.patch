@@ -1,0 +1,18 @@
+diff --git a/lib/neatogen/overlap.c b/lib/neatogen/overlap.c
+--- a/lib/neatogen/overlap.c
++++ b/lib/neatogen/overlap.c
+@@ -594,10 +594,12 @@
++    /* sfdp calls this even when overlap removal is switched off. */
++    if (!label_sizes || ntry < 0)
++        return;
++
+     (void)dim;
+     (void)A;
+     (void)x;
+-    (void)label_sizes;
+-    (void)ntry;
+     (void)initial_scaling;
+     (void)edge_labeling_scheme;
+     (void)n_constr_nodes;
+     (void)constr_nodes;
+     (void)A_constr;

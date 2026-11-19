@@ -1,0 +1,60 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "headers",
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cgraph",
+    ],
+)
+
+cc_library(
+    name = "fdpgen",
+    srcs = [
+        "clusteredges.c",
+        "comp.c",
+        "dbg.c",
+        "fdpinit.c",
+        "grid.c",
+        "layout.c",
+        "tlayout.c",
+        "xlayout.c",
+    ],
+    hdrs = glob(["*.h"]),
+    # Apple fastbuild defines DEBUG, which enables Graphviz's layout tracing.
+    copts = ["-UDEBUG"],
+    includes = [
+        ".",
+        "..",
+        "../cdt",
+        "../cgraph",
+        "../common",
+        "../gvc",
+        "../pack",
+        "../pathplan",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    linkstatic = True,
+    local_defines = ["NEATOGEN_EXPORTS=1"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":headers",
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/common:headers",
+        "//lib/gvc",
+        "//lib/neatogen",
+        "//lib/pack",
+        "//lib/pathplan",
+        "//lib/util",
+    ],
+)

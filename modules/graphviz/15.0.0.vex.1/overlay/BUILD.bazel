@@ -1,0 +1,136 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+genrule(
+    name = "config_h",
+    outs = ["config.h"],
+    cmd = select({
+        "@bazel_tools//src/conditions:windows": """
+cat > "$@" <<'EOF'
+#pragma once
+
+/* Minimal Bazel config for cdt/util/cgraph on Windows */
+#define BROWSER "start"
+#define DEFAULT_DPI 96
+#define GVPLUGIN_CONFIG_FILE "config8"
+#define PACKAGE_VERSION "bazel"
+#define DIGCOLA 1
+#define IPSEPCOLA 1
+#define ORTHO 1
+#define SFDP 1
+EOF
+""",
+        "@bazel_tools//src/conditions:darwin": """
+cat > "$@" <<'EOF'
+#pragma once
+
+/* Minimal Bazel config for cdt/util/cgraph on macOS */
+#define DARWIN 1
+#define DARWIN_DYLIB 1
+#define BROWSER "open"
+#define DEFAULT_DPI 96
+#define GVPLUGIN_CONFIG_FILE "config8"
+#define HAVE_UNISTD_H 1
+#define HAVE_SYS_MMAN_H 1
+#define HAVE_DRAND48 1
+#define HAVE_SRAND48 1
+#define PACKAGE_VERSION "bazel"
+#define DIGCOLA 1
+#define IPSEPCOLA 1
+#define ORTHO 1
+#define SFDP 1
+EOF
+""",
+        "//conditions:default": """
+cat > "$@" <<'EOF'
+#pragma once
+
+/* Minimal Bazel config for cdt/util/cgraph on Linux */
+#define BROWSER "xdg-open"
+#define DEFAULT_DPI 96
+#define GVPLUGIN_CONFIG_FILE "config8"
+#define HAVE_UNISTD_H 1
+#define HAVE_SYS_MMAN_H 1
+#define HAVE_DRAND48 1
+#define HAVE_SRAND48 1
+#define PACKAGE_VERSION "bazel"
+#define DIGCOLA 1
+#define IPSEPCOLA 1
+#define ORTHO 1
+#define SFDP 1
+EOF
+""",
+    }),
+)
+
+cc_library(
+    name = "graphviz_config",
+    hdrs = [":config_h"],
+)
+
+genrule(
+    name = "builddate_h",
+    outs = ["builddate.h"],
+    cmd = """
+cat > "$@" <<'EOF'
+#pragma once
+#define BUILDDATE "bazel"
+EOF
+""",
+)
+
+cc_library(
+    name = "graphviz_builddate",
+    hdrs = [":builddate_h"],
+)
+
+alias(
+    name = "graphviz",
+    actual = ":cgraph",
+)
+
+alias(
+    name = "cgraph",
+    actual = "//lib/cgraph:cgraph",
+)
+
+alias(
+    name = "gvc",
+    actual = "//lib/gvc:gvc",
+)
+
+alias(
+    name = "gvplugin_core",
+    actual = "//plugin/core:gvplugin_core",
+)
+
+alias(
+    name = "gvplugin_dot_layout",
+    actual = "//plugin/dot_layout:gvplugin_dot_layout",
+)
+
+alias(
+    name = "gvplugin_neato_layout",
+    actual = "//plugin/neato_layout:gvplugin_neato_layout",
+)
+
+alias(
+    name = "gv_builtin_dot_core",
+    actual = "//plugin:gv_builtin_dot_core",
+)
+
+alias(
+    name = "xdot",
+    actual = "//lib/xdot:xdot",
+)
+
+alias(
+    name = "graphviz_swift_mvp",
+    actual = "//plugin:gv_swift_mvp",
+)
+
+alias(
+    name = "gvplugin_quartz",
+    actual = "//plugin/quartz:gvplugin_quartz",
+)

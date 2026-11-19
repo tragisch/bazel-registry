@@ -1,0 +1,25 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "vpsc",
+    srcs = [
+        "block.cpp",
+        "blocks.cpp",
+        "constraint.cpp",
+        "csolve_VPSC.cpp",
+        "generate-constraints.cpp",
+        "solve_VPSC.cpp",
+        "variable.cpp",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+    ],
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/util",
+    ],
+)

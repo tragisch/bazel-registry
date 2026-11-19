@@ -1,0 +1,35 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "gvplugin_neato_layout",
+    srcs = [
+        "gvlayout_neato_layout.c",
+        "gvplugin_neato_layout.c",
+    ],
+    includes = [
+        ".",
+        "..",
+        "../../lib",
+        "../../lib/cdt",
+        "../../lib/cgraph",
+        "../../lib/common",
+        "../../lib/gvc",
+        "../../lib/pathplan",
+    ],
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/circogen",
+        "//lib/fdpgen",
+        "//lib/gvc",
+        "//lib/neatogen",
+        "//lib/osage",
+        "//lib/patchwork",
+        "//lib/rbtree",
+        "//lib/sfdpgen",
+        "//lib/sparse",
+        "//lib/twopigen",
+        "//lib/vpsc",
+    ],
+)

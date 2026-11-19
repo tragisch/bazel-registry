@@ -1,0 +1,20 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "rbtree",
+    srcs = [
+        "red_black_tree.c",
+    ],
+    hdrs = [
+        "red_black_tree.h",
+    ],
+    includes = [
+        ".",
+        "..",
+    ],
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+    ],
+)

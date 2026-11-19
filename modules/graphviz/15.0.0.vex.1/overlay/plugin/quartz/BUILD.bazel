@@ -1,0 +1,40 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+# Quartz (CoreGraphics/CoreText/ImageIO) renderer: png, jpeg, pdf, gif, tiff, ...
+# macOS only. GVTextLayout.m is the iPhoneOS text layout and is not needed here.
+cc_library(
+    name = "gvplugin_quartz",
+    srcs = [
+        "gvdevice_quartz.c",
+        "gvloadimage_quartz.c",
+        "gvplugin_quartz.c",
+        "gvrender_quartz.c",
+        "gvtextlayout_quartz.c",
+    ],
+    hdrs = ["gvplugin_quartz.h"],
+    includes = [
+        ".",
+        "../../lib",
+    ],
+    linkopts = [
+        "-framework",
+        "ApplicationServices",
+        "-framework",
+        "CoreGraphics",
+        "-framework",
+        "CoreText",
+        "-framework",
+        "ImageIO",
+        "-framework",
+        "CoreFoundation",
+    ],
+    target_compatible_with = ["@platforms//os:macos"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/common",
+        "//lib/gvc",
+        "//lib/util",
+    ],
+)

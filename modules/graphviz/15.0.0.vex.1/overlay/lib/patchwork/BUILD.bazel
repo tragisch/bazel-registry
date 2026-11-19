@@ -1,0 +1,39 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "patchwork",
+    srcs = [
+        "patchwork.c",
+        "patchworkinit.c",
+        "tree_map.c",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+        "../cdt",
+        "../cgraph",
+        "../common",
+        "../gvc",
+        "../pack",
+        "../pathplan",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/common:headers",
+        "//lib/fdpgen",
+        "//lib/gvc",
+        "//lib/neatogen",
+        "//lib/pack",
+        "//lib/pathplan",
+        "//lib/sparse",
+        "//lib/util",
+    ],
+)

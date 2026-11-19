@@ -41,6 +41,7 @@ jobs:
             {"name":"csv_fast","version":"0.1.0","target":"@csv_fast//:csv_fast","command":"build"},
             {"name":"cglm","version":"0.9.6","target":"@cglm//:cglmc","command":"build"},
             {"name":"graphviz","version":"15.0.0","target":"@graphviz//:graphviz","command":"build"},
+            {"name":"graphviz","version":"15.0.0.vex.1","label":"graphviz@15.0.0.vex.1","target":"@graphviz//:graphviz_swift_mvp @graphviz//plugin:gv_swift_mvp_smoke_test","command":"test"},
             {"name":"graphblas","version":"10.3.1","target":"@graphblas//:graphblas","command":"build"},
             {"name":"gnuplot_i","version":"1.0","target":"@gnuplot_i//:gnuplot_i","command":"build"},
             {"name":"gunslinger","version":"0.03-alpha","target":"@gunslinger//:gunslinger","command":"build"},
@@ -193,7 +194,7 @@ jobs:
   build-module:
     needs: determine-modules
     if: needs.determine-modules.outputs.count != '0'
-    name: ${{ matrix.module.name }} (${{ matrix.os }})
+    name: ${{ matrix.module.label || matrix.module.name }} (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.determine-modules.outputs.matrix) }}

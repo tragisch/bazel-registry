@@ -1,0 +1,35 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "sparse",
+    srcs = [
+        "DotIO.c",
+        "QuadTree.c",
+        "SparseMatrix.c",
+        "clustering.c",
+        "color_palette.c",
+        "colorutil.c",
+        "general.c",
+        "mq.c",
+    ],
+    hdrs = glob(["*.h"]),
+    includes = [
+        ".",
+        "..",
+        "../cdt",
+        "../cgraph",
+        "../common",
+    ],
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [],
+        "//conditions:default": ["-lm"],
+    }),
+    linkstatic = True,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:graphviz_config",
+        "//lib/cgraph",
+        "//lib/common:headers",
+        "//lib/util",
+    ],
+)

@@ -1,7 +1,8 @@
 {
     "homepage": "https://graphviz.org/",
-    "description": "Graphviz graph visualization tools with Bazel overlay for cgraph, gvc, dot_layout/core plugins, xdot and Swift MVP builtins",
+    "description": "Graphviz graph visualization tools with Bazel overlay for cgraph, gvc, dot_layout/core plugins (+quartz on macOS in .vex builds), xdot and Swift MVP builtins",
     "versions": [
-        "15.0.0"
+        "15.0.0",
+        "15.0.0.vex.1"
     ]
 }
