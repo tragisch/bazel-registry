@@ -1,0 +1,11 @@
+{
+    "homepage": "https://github.com/tragisch/MMatrix",
+    "description": "MMatrix - C library for dense and sparse matrix, vector, and tensor operations",
+    "repository": [
+        "github:tragisch/MMatrix"
+    ],
+    "versions": [
+        "0.4.1"
+    ],
+    "yanked_versions": {}
+}

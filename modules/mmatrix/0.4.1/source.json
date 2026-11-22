@@ -1,0 +1,13 @@
+{
+    "name": "mmatrix",
+    "url": "https://github.com/tragisch/MMatrix/archive/refs/tags/0.4.1.tar.gz",
+    "integrity": "sha256-eQsLbNXA1vODiHc2yOUFHbI//SpDC2g6n7dor9flUOg=",
+    "strip_prefix": "MMatrix-0.4.1",
+    "license": "MIT",
+    "overlay": {
+        "BUILD.bazel": "sha256-u1raqZS1R7bnwJzZp0pR2xSprLXqG2VLKfhd2lX+byE=",
+        "app/matrix/BUILD.bazel": "sha256-hm0EdxtBoX7xAvnTZXuSpToPlh7jJ0C0JiYEfdPwzWY=",
+        "app/vector/BUILD.bazel": "sha256-1sKRgBJ5SmikorJIj+lmf8vzvNyhu2LmD7+IsWTNSbg=",
+        "third_party/log.c/BUILD.bazel": "sha256-eIHU1mjP8EhNVctu7UomAhFR051HyyUMqHKwOHF1yhg="
+    }
+}

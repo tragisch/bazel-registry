@@ -59,3 +59,6 @@ dkms.conf
 bazel-*
 MODULE.bazel.lock
 
+.bgai-*
+tmp/*
+
