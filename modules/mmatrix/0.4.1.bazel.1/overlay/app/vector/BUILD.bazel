@@ -1,0 +1,241 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+config_setting(
+    name = "macos_arm64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
+    ],
+)
+
+config_setting(
+    name = "macos",
+    constraint_values = [
+        "@platforms//os:macos",
+    ],
+)
+
+config_setting(
+    name = "linux_x86_64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "linux",
+    constraint_values = [
+        "@platforms//os:linux",
+    ],
+)
+
+config_setting(
+    name = "backend_accelerate",
+    values = {"define": "MATRIX_BACKEND=accelerate"},
+)
+
+config_setting(
+    name = "backend_openblas",
+    values = {"define": "MATRIX_BACKEND=openblas"},
+)
+
+config_setting(
+    name = "backend_accelerate_macos",
+    constraint_values = [
+        "@platforms//os:macos",
+    ],
+    values = {"define": "MATRIX_BACKEND=accelerate"},
+)
+
+config_setting(
+    name = "backend_openblas_linux",
+    constraint_values = [
+        "@platforms//os:linux",
+    ],
+    values = {"define": "MATRIX_BACKEND=openblas"},
+)
+
+default_copts = [
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wconversion",
+    "-Wsign-conversion",
+    "-Wno-c23-extensions",
+    "-Wno-unused-function",
+]
+
+perf_copts = select({
+    ":macos_arm64": [
+        "-O3",
+        "-fvectorize",
+        "-ffast-math",
+        "-funsafe-math-optimizations",
+        "-funroll-loops",
+        "-fomit-frame-pointer",
+        "-march=native",
+    ],
+    ":linux_x86_64": [
+        "-O3",
+        "-ffast-math",
+        "-funsafe-math-optimizations",
+        "-funroll-loops",
+        "-fomit-frame-pointer",
+        "-march=native",
+        "-mtune=native",
+        "-fno-math-errno",
+        "-fno-trapping-math",
+        "-falign-functions=32",
+    ],
+    "//conditions:default": [],
+})
+
+package_copts = select({
+    ":backend_accelerate_macos": [
+        "-DUSE_ACCELERATE",
+        "-DACCELERATE_NEW_LAPACK",
+    ],
+    ":backend_openblas_linux": [
+        "-DUSE_OPENBLAS",
+    ],
+    "//conditions:default": [],
+})
+
+openmp_copts = select({
+    ":macos": [
+        "-Xpreprocessor",
+        "-fopenmp",
+    ],
+    ":linux": ["-fopenmp"],
+    "//conditions:default": [],
+})
+
+openmp_linkopts = select({
+    ":linux": [],
+    "//conditions:default": [],
+})
+
+accelerate_linkopts = select({
+    ":backend_accelerate_macos": [
+        "-framework Accelerate",
+        "-lc++abi",
+    ],
+    "//conditions:default": [],
+})
+
+default_deps = [
+    "//third_party/log.c:log",
+    "@openmp//:libomp",
+]
+
+filegroup(
+    name = "vector_header",
+    srcs = glob(["include/*.h"]),
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "sv",
+    srcs = ["src/sv.c"],
+    hdrs = ["include/sv.h"],
+    copts = default_copts + perf_copts + package_copts + openmp_copts,
+    includes = ["include"],
+    linkopts = openmp_linkopts + accelerate_linkopts,
+    visibility = ["//visibility:public"],
+    deps = default_deps,
+)
+
+cc_library(
+    name = "sv_optim",
+    srcs = ["src/sv_optim.c"],
+    hdrs = ["include/sv_optim.h"],
+    copts = default_copts + perf_copts + openmp_copts,
+    includes = ["include"],
+    linkopts = openmp_linkopts,
+    visibility = ["//visibility:public"],
+    deps = default_deps,
+)
+
+cc_library(
+    name = "dv",
+    srcs = ["src/dv.c"],
+    hdrs = ["include/dv.h"],
+    copts = default_copts + perf_copts + package_copts + openmp_copts,
+    includes = ["include"],
+    linkopts = openmp_linkopts + accelerate_linkopts,
+    visibility = ["//visibility:public"],
+    deps = default_deps,
+)
+
+cc_library(
+    name = "vv",
+    srcs = ["src/vv.c"],
+    hdrs = ["include/vv.h"],
+    copts = default_copts + perf_copts + package_copts + openmp_copts,
+    includes = ["include"],
+    linkopts = openmp_linkopts + accelerate_linkopts,
+    visibility = ["//visibility:public"],
+    deps = default_deps + [
+        ":sv",
+    ],
+)
+
+cc_library(
+    name = "dvs",
+    srcs = ["src/dvs.c"],
+    hdrs = ["include/dvs.h"],
+    copts = default_copts + perf_copts + package_copts + openmp_copts,
+    includes = ["include"],
+    linkopts = openmp_linkopts + accelerate_linkopts,
+    visibility = ["//visibility:public"],
+    deps = default_deps + [
+        ":dv",
+    ],
+)
+
+cc_library(
+    name = "vec3",
+    srcs = ["src/vec3.c"],
+    hdrs = ["include/vec3.h"],
+    copts = default_copts + perf_copts + package_copts + openmp_copts,
+    includes = ["include"],
+    linkopts = openmp_linkopts + accelerate_linkopts,
+    visibility = ["//visibility:public"],
+    deps = default_deps,
+)
+
+cc_library(
+    name = "vector_bridge",
+    srcs = ["src/vector_bridge.c"],
+    hdrs = ["include/vector_bridge.h"],
+    copts = default_copts + perf_copts + package_copts + openmp_copts,
+    includes = ["include"],
+    linkopts = openmp_linkopts + accelerate_linkopts,
+    visibility = ["//visibility:public"],
+    deps = default_deps + [
+        ":dv",
+        ":dvs",
+        ":sv",
+        ":vv",
+        "//app/matrix:dm",
+        "//app/matrix:dms",
+        "//app/matrix:sm",
+    ],
+)
+
+cc_library(
+    name = "vector",
+    hdrs = glob(["include/*.h"]),
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":dv",
+        ":dvs",
+        ":sv",
+        ":sv_optim",
+        ":vec3",
+        ":vector_bridge",
+        ":vv",
+    ],
+)

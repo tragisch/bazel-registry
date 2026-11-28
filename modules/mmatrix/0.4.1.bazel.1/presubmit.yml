@@ -1,0 +1,7 @@
+matrix:
+  platform: [ubuntu-latest, macos-latest]
+tasks:
+  public_libraries:
+    build_targets:
+      - "@mmatrix//app/matrix:matrix"
+      - "@mmatrix//app/vector:vector"
